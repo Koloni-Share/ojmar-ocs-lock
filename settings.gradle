@@ -1,0 +1,3 @@
+rootProject.name = "OcsLockApp"
+include ':app'
+include ':OcsLockLibs'
