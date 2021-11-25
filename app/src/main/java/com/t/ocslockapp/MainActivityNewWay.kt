@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,6 +13,7 @@ import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +21,7 @@ import com.ocslocklibs.OCSSingleToneClassELT2
 import com.ocslocklibs.interfacePackage.IAPIOCSLockCallback
 import com.ondo.ocssmartlibrary.OcsLock
 import com.ondo.ocssmartlibrary.OcsSmartManager
+import java.text.SimpleDateFormat
 
 class MainActivityNewWay : AppCompatActivity(), IAPIOCSLockCallback {
 
@@ -38,6 +39,20 @@ class MainActivityNewWay : AppCompatActivity(), IAPIOCSLockCallback {
     private var lockPosition = 0;
     var ocsSingleToneClass: OCSSingleToneClassELT2? = null
 
+    var ocsListofLockNumber: IntArray = intArrayOf(12)  // List of Lock Number
+    var ocsMasterCode = "000000" // Master Code
+    var ocsUserCode = "1234" // User Code
+    var ocsLockNumber = 12 // Lock Number
+    var ocsDateFormat = SimpleDateFormat("MM/dd/yyyy") // yyyy/mm/dd  Date Format
+    var ocsExpiryDate = ocsDateFormat.parse("12/12/2022")  // Expiry Date.
+    var ocsBlockKeypad = true
+    var ocsAutomaticClosing = false
+    var ocsBuzzOn = true
+    val LED_OFF_TYPE = 3
+    val LED_ON_TYPE = 2
+    val LED_ON_900_MILLIS_TYPE = 1
+    val LED_ON_2_SECONDS_TYPE = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -49,7 +64,16 @@ class MainActivityNewWay : AppCompatActivity(), IAPIOCSLockCallback {
     }
 
     private fun initOcs() {
-        ocsSingleToneClass = OCSSingleToneClassELT2(this@MainActivityNewWay, this@MainActivityNewWay)
+
+        ocsDateFormat = SimpleDateFormat("MM/dd/yyyy")
+        ocsExpiryDate = ocsDateFormat.parse("12/12/2022")
+
+        ocsSingleToneClass = OCSSingleToneClassELT2(
+            this@MainActivityNewWay,
+            ocsListofLockNumber, ocsMasterCode, ocsUserCode, ocsLockNumber,
+            ocsDateFormat, ocsExpiryDate, ocsBlockKeypad, ocsAutomaticClosing, ocsBuzzOn,
+            LED_ON_900_MILLIS_TYPE, this@MainActivityNewWay
+        )
     }
 
     private fun initView() {
@@ -112,8 +136,6 @@ class MainActivityNewWay : AppCompatActivity(), IAPIOCSLockCallback {
     }
 
 
-
-
     override fun onDestroy() {
         super.onDestroy()
 //        ocsSingleToneClass?.onClearOCSLockProcess()
@@ -122,7 +144,11 @@ class MainActivityNewWay : AppCompatActivity(), IAPIOCSLockCallback {
     override fun onOCSLockScanCompleted() {
         Handler(Looper.getMainLooper()).post {
             llProgressBar.visibility = View.GONE
-            Toast.makeText(this@MainActivityNewWay, "Scan Completed and start connecting...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this@MainActivityNewWay,
+                "Scan Completed and start connecting...",
+                Toast.LENGTH_SHORT
+            ).show()
 
 //            ocsSingleToneClass?.connectToOCSLock(
 //                edtPassword.text.toString(),

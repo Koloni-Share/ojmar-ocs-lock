@@ -16,6 +16,7 @@ import com.ondo.ocssmartlibrary.license.ExtendedLicense
 import com.ondo.ocssmartlibrary.license.License
 import java.io.IOException
 import java.text.SimpleDateFormat
+import java.util.*
 
 
 class OCSSingleToneClassELT2 {
@@ -28,17 +29,43 @@ class OCSSingleToneClassELT2 {
     lateinit var licence: License
     lateinit var extendedLicense: ExtendedLicense
     lateinit var licenseInBytes: ByteArray
-    var arrListOfLockNumber: IntArray = intArrayOf(12)  // List of Lock Number
-    var strMasterCode = "000000" // Master Code
-    var strUserCode = "1234" // User Code
-    var lockNum = 12 // Lock Number
-    var format = SimpleDateFormat("MM/dd/yyyy") // yyyy/mm/dd  Date Format
-    var selectedDate = format.parse("12/12/2022")  // Expiry Date.
+
     var extendedLicenseFrame = ""
     var macID = ""
 
-    constructor(iapiOcsLockCallback: IAPIOCSLockCallback, activity: Activity) {
+    var ocsListofLockNumber: IntArray = intArrayOf(12)  // List of Lock Number
+    var ocsMasterCode = "000000" // Master Code
+    var ocsUserCode = "1234" // User Code
+    var ocsLockNumber = 12 // Lock Number
+    var ocsDateFormat = SimpleDateFormat("MM/dd/yyyy") // yyyy/mm/dd  Date Format
+    var ocsExpiryDate = ocsDateFormat.parse("12/12/2022")  // Expiry Date.
+    var ocsBlockKeypad = true
+    var ocsAutomaticClosing = false
+    var ocsBuzzOn = true
+    var ocsLEDType = 1
 
+
+    constructor(
+        activity: Activity,
+        ocsListofLockNumber: IntArray, ocsMasterCode: String,
+        ocsUserCode: String, ocsLockNumber: Int,
+        ocsDateFormat: SimpleDateFormat, ocsExpiryDate: Date,
+        ocsBlockKeypad: Boolean, ocsAutomaticClosing: Boolean,
+        ocsBuzzOn: Boolean,
+        ocsLEDType: Int,
+        iapiOcsLockCallback: IAPIOCSLockCallback
+    ) {
+
+        this.ocsListofLockNumber = ocsListofLockNumber
+        this.ocsMasterCode = ocsMasterCode
+        this.ocsUserCode = ocsUserCode
+        this.ocsLockNumber = ocsLockNumber
+        this.ocsDateFormat = ocsDateFormat
+        this.ocsExpiryDate = ocsExpiryDate
+        this.ocsBlockKeypad = ocsBlockKeypad
+        this.ocsAutomaticClosing = ocsAutomaticClosing
+        this.ocsBuzzOn = ocsBuzzOn
+        this.ocsLEDType = ocsLEDType
         this.iapiOcsLockCallback = iapiOcsLockCallback
 
         activity.runOnUiThread {
@@ -49,10 +76,10 @@ class OCSSingleToneClassELT2 {
                 }.close()
 
                 extendedLicenseFrame = extendedLicense.generateConfigForDedicatedLock(
-                    lockNum,
-                    strMasterCode, strUserCode, true,
-                    true,
-                    Led.LED_ON_900_MILLIS_TYPE, selectedDate, false
+                    ocsLockNumber,
+                    ocsMasterCode, ocsUserCode, ocsBlockKeypad,
+                    ocsBuzzOn,
+                    ocsLEDType, ocsExpiryDate, ocsAutomaticClosing
                 )
 
                 Log.e("OCS_", extendedLicense.masterCode)
@@ -116,7 +143,7 @@ class OCSSingleToneClassELT2 {
     fun configuredLock() {
         Log.e("OCS_con_", " configuredLock")
         var licenceByteArray =
-            extendedLicense.getUserFrameDedicatedLocksString(arrListOfLockNumber, strUserCode)
+            extendedLicense.getUserFrameDedicatedLocksString(ocsListofLockNumber, ocsUserCode)
         licence = License.getLicense(licenceByteArray)
 
         ocsLockSmartManager.startScan(
