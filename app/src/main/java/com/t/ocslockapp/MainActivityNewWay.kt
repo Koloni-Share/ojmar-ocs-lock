@@ -95,7 +95,6 @@ class MainActivityNewWay : AppCompatActivity(), IAPIOCSLockCallback {
             onZoomOutAnimRelative(this@MainActivityNewWay, appBtnScan)
             llProgressBar.visibility = View.VISIBLE
             Toast.makeText(this@MainActivityNewWay, "Scan Started.", Toast.LENGTH_SHORT).show()
-//            ocsSingleToneClass?.startOCSLockScan(5)
         }
 
         appBtnConnect.setOnClickListener {
@@ -138,7 +137,6 @@ class MainActivityNewWay : AppCompatActivity(), IAPIOCSLockCallback {
 
     override fun onDestroy() {
         super.onDestroy()
-//        ocsSingleToneClass?.onClearOCSLockProcess()
     }
 
     override fun onOCSLockScanCompleted() {
@@ -149,20 +147,6 @@ class MainActivityNewWay : AppCompatActivity(), IAPIOCSLockCallback {
                 "Scan Completed and start connecting...",
                 Toast.LENGTH_SHORT
             ).show()
-
-//            ocsSingleToneClass?.connectToOCSLock(
-//                edtPassword.text.toString(),
-//                edtMacID.text.toString(),
-//                5
-//            )
-
-//            runOnUiThread {
-//                Handler(Looper.getMainLooper()).postDelayed(object : Runnable {
-//                    override fun run() {
-//
-//                    }
-//                }, 2000)
-//            }
         }
     }
 
@@ -187,7 +171,7 @@ class MainActivityNewWay : AppCompatActivity(), IAPIOCSLockCallback {
         }
     }
 
-    override fun onOCSLockConnectionError(error: OcsSmartManager.OcsSmartManagerError?) {
+    override fun onOCSLockConnectionError(error: String) {
         llProgressBar.visibility = View.GONE
         Handler(Looper.getMainLooper()).post {
             Toast.makeText(this@MainActivityNewWay, error.toString(), Toast.LENGTH_SHORT).show()

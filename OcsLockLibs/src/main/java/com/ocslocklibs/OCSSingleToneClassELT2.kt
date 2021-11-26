@@ -126,7 +126,7 @@ class OCSSingleToneClassELT2 {
             object : ProcessCallback {
                 override fun onError(p0: OcsSmartManager.OcsSmartManagerError?) {
                     Log.e("OCS_onError", "Error :" + p0!!.name)
-
+                    iapiOcsLockCallback.onOCSLockConnectionError(p0.toString())
                 }
 
                 override fun onSuccess(p0: String?) {
@@ -179,7 +179,7 @@ class OCSSingleToneClassELT2 {
     private val processCallback: ProcessCallback = object : ProcessCallback {
         override fun onError(error: OcsSmartManager.OcsSmartManagerError?) {
             Log.e("OCS_onError", error.toString())
-            iapiOcsLockCallback.onOCSLockConnectionError(error)
+            iapiOcsLockCallback.onOCSLockConnectionError(error.toString())
         }
 
         override fun onSuccess(response: String?) {

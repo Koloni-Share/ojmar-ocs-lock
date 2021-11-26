@@ -9,7 +9,7 @@ interface IAPIOCSLockCallback {
     fun onOCSLockScanError(error: OcsSmartManager.OcsSmartManagerError?)
     fun onOCSLockScanError(error: String)
     fun onOCSLockScanDeviceFound(ocsLock: OcsLock?)
-    fun onOCSLockConnectionError(error: OcsSmartManager.OcsSmartManagerError?)
+    fun onOCSLockConnectionError(error: String)
     fun onOCSLockConnectionSuccess(successString: String?, isSuccess: Boolean)
 
 }
