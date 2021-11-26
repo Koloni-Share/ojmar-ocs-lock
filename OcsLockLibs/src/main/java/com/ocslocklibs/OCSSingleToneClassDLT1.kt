@@ -90,7 +90,7 @@ class OCSSingleToneClassDLT1 : ProcessCallback {
     }
 
     override fun onError(p0: OcsSmartManager.OcsSmartManagerError?) {
-        iapiOcsLockCallback.onOCSLockConnectionError(p0)
+        iapiOcsLockCallback.onOCSLockConnectionError(p0.toString())
     }
 
     override fun onSuccess(p0: String?) {

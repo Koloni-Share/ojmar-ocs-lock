@@ -168,7 +168,7 @@ class MainActivity : AppCompatActivity(), IAPIOCSLockCallback {
         }
     }
 
-    override fun onOCSLockConnectionError(error: OcsSmartManager.OcsSmartManagerError?) {
+    override fun onOCSLockConnectionError(error: String) {
         llProgressBar.visibility = View.GONE
         Handler(Looper.getMainLooper()).post {
             Toast.makeText(this@MainActivity, error.toString(), Toast.LENGTH_SHORT).show()
