@@ -54,7 +54,7 @@ class OcsListAdapter(private val mContext: Context, private val mList: ArrayList
                 e.printStackTrace()
             }
 
-            if (mContext is MainActivity) {
+            if (mContext is ScanActivity) {
                 mContext.onConnectToOcsLock(position, mList[position]!!)
             }
         }

@@ -13,6 +13,7 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,7 +30,8 @@ class MainActivity : AppCompatActivity(), IAPIOCSLockCallback {
     lateinit var appBtnConnect: AppCompatButton
     lateinit var rcvOCSLock: RecyclerView
     lateinit var llProgressBar: LinearLayout
-    lateinit var edtMacID: EditText
+
+    //    lateinit var edtMacID: EditText
     lateinit var edtPassword: EditText
     private var mLayoutManager: LinearLayoutManager? = null
 
@@ -37,21 +39,59 @@ class MainActivity : AppCompatActivity(), IAPIOCSLockCallback {
     var listOCSLock = ArrayList<OcsLock?>()
     private var lockPosition = 0;
     var ocsSingleToneClass: OCSSingleToneClassELT1? = null
+    lateinit var tvOcsLockNumber: TextView
+    lateinit var tvOcsMACID: TextView
+    lateinit var tvOcsMasterCode: TextView
+    lateinit var tvOcsUserCode: TextView
+    var ocsLockNumber = 12 // Lock Number
+    var ocsMasterCode = "" // Master Code
+    var ocsUserCode = "" // User Code
+    var lockMacID = "" // Lock MAC
+    var ocsListofLockNumber: IntArray = intArrayOf(12)  // List of Lock Number
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         marshmallowGPSPremissionCheck()
-
-        initOcs()
         initView()
-
+        initOcs()
 
     }
 
 
     private fun initOcs() {
-        ocsSingleToneClass = OCSSingleToneClassELT1(this@MainActivity, this@MainActivity)
+
+        if (intent.hasExtra("lockNumber")) {
+            ocsLockNumber = intent.getIntExtra("lockNumber", 0)
+            ocsListofLockNumber = intArrayOf(ocsLockNumber)
+        }
+
+        if (intent.hasExtra("lockMacID")) {
+            lockMacID = intent.getStringExtra("lockMacID").toString()
+        }
+
+        if (intent.hasExtra("userCode")) {
+            ocsUserCode = intent.getStringExtra("userCode").toString()
+        }
+
+        if (intent.hasExtra("masterCode")) {
+            ocsMasterCode = intent.getStringExtra("masterCode").toString()
+        }
+
+        tvOcsLockNumber.setText("Lock Number : " + ocsLockNumber)
+        tvOcsMACID.setText("Lock MAC : " + lockMacID)
+        tvOcsMasterCode.setText("Lock Master Code : " + ocsMasterCode)
+        tvOcsUserCode.setText("Lock User Code : " + ocsUserCode)
+
+        ocsSingleToneClass = OCSSingleToneClassELT1(
+            this@MainActivity,
+            this@MainActivity,
+            ocsLockNumber,
+            ocsListofLockNumber,
+            ocsUserCode,
+            ocsMasterCode,
+            lockMacID
+        )
     }
 
     private fun initView() {
@@ -60,49 +100,35 @@ class MainActivity : AppCompatActivity(), IAPIOCSLockCallback {
         appBtnScan = findViewById(R.id.appBtnScan)
         rcvOCSLock = findViewById(R.id.rcvOCSLock)
         llProgressBar = findViewById(R.id.llProgressBar)
-        edtMacID = findViewById(R.id.edtMacID)
+        tvOcsUserCode = findViewById(R.id.tvOcsUserCode)
+        tvOcsMasterCode = findViewById(R.id.tvOcsMasterCode)
+//        edtMacID = findViewById(R.id.edtMacID)
         edtPassword = findViewById(R.id.edtPassword)
+        tvOcsLockNumber = findViewById(R.id.tvOcsLockNumber)
+        tvOcsMACID = findViewById(R.id.tvOcsMACID)
 
         listOCSLock.clear()
 
         mLayoutManager = LinearLayoutManager(this@MainActivity)
         rcvOCSLock!!.layoutManager = mLayoutManager
 
-        appBtnScan.setOnClickListener {
-            onZoomOutAnimRelative(this@MainActivity, appBtnScan)
-            llProgressBar.visibility = View.VISIBLE
-            Toast.makeText(this@MainActivity, "Scan Started.", Toast.LENGTH_SHORT).show()
-            ocsSingleToneClass?.startOCSLockScan(5)
-        }
+//        appBtnScan.setOnClickListener {
+//            onZoomOutAnimRelative(this@MainActivity, appBtnScan)
+//            llProgressBar.visibility = View.VISIBLE
+//            Toast.makeText(this@MainActivity, "Scan Started.", Toast.LENGTH_SHORT).show()
+//            ocsSingleToneClass?.startOCSLockScan(5)
+//        }
 
         appBtnConnect.setOnClickListener {
             onZoomOutAnimRelative(this@MainActivity, appBtnConnect)
-            if (edtPassword.text.toString().length > 0) {
-                if (edtMacID.text.toString().length > 0) {
-                    try {
-                        llProgressBar.visibility = View.VISIBLE
-                        ocsSingleToneClass?.startOCSLockScan(5)
-
-                    } catch (e: Exception) {
-                        llProgressBar.visibility = View.GONE
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Invalid Mac Address, please enter proper mac id format.",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
-                    }
-                } else {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Please Enter Mac Address.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            } else {
+            try {
+                llProgressBar.visibility = View.VISIBLE
+                ocsSingleToneClass?.startOCSLockScan(5)
+            } catch (e: Exception) {
+                llProgressBar.visibility = View.GONE
                 Toast.makeText(
                     this@MainActivity,
-                    "Please Enter four digit password.",
+                    "Exception : " + e.localizedMessage,
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -113,21 +139,21 @@ class MainActivity : AppCompatActivity(), IAPIOCSLockCallback {
     }
 
 
-    fun onConnectToOcsLock(position: Int, ocsLock: OcsLock) {
-
-        if (edtPassword.text.toString().length > 0) {
-            lockPosition = position
-            llProgressBar.visibility = View.VISIBLE
-            ocsSingleToneClass?.connectToOCSLock(edtPassword.text.toString(), ocsLock.tag, 5)
-        } else {
-            Toast.makeText(
-                this@MainActivity,
-                "Please Enter four digit password.",
-                Toast.LENGTH_SHORT
-            )
-                .show()
-        }
-    }
+//    fun onConnectToOcsLock(position: Int, ocsLock: OcsLock) {
+//
+//        if (edtPassword.text.toString().length > 0) {
+//            lockPosition = position
+//            llProgressBar.visibility = View.VISIBLE
+//            ocsSingleToneClass?.connectToOCSLock(edtPassword.text.toString(), ocsLock.tag, 5)
+//        } else {
+//            Toast.makeText(
+//                this@MainActivity,
+//                "Please Enter four digit password.",
+//                Toast.LENGTH_SHORT
+//            )
+//                .show()
+//        }
+//    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -135,24 +161,19 @@ class MainActivity : AppCompatActivity(), IAPIOCSLockCallback {
     }
 
     override fun onOCSLockScanCompleted() {
-        Handler(Looper.getMainLooper()).post {
-            llProgressBar.visibility = View.GONE
-            Toast.makeText(this@MainActivity, "Scan Completed and start connecting...", Toast.LENGTH_SHORT).show()
-
-            ocsSingleToneClass?.connectToOCSLock(
-                edtPassword.text.toString(),
-                edtMacID.text.toString(),
-                5
-            )
-
-//            runOnUiThread {
-//                Handler(Looper.getMainLooper()).postDelayed(object : Runnable {
-//                    override fun run() {
+//        Handler(Looper.getMainLooper()).post {
+//            llProgressBar.visibility = View.GONE
+//            Toast.makeText(
+//                this@MainActivity,
+//                "Scan Completed and start connecting...",
+//                Toast.LENGTH_SHORT
+//            ).show()
 //
-//                    }
-//                }, 2000)
-//            }
-        }
+//            ocsSingleToneClass?.connectToOCSLock(
+//                ocsUserCode,
+//                5
+//            )
+//        }
     }
 
     override fun onOCSLockScanError(error: OcsSmartManager.OcsSmartManagerError?) {

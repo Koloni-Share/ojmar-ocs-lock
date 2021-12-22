@@ -34,8 +34,8 @@ class OCSSingleToneClassELT2 {
     var macID = ""
 
     var ocsListofLockNumber: IntArray = intArrayOf(12)  // List of Lock Number
-    var ocsMasterCode = "000000" // Master Code
-    var ocsUserCode = "1234" // User Code
+    var ocsMasterCode = "" // Master Code
+    var ocsUserCode = "" // User Code
     var ocsLockNumber = 12 // Lock Number
     var ocsDateFormat = SimpleDateFormat("MM/dd/yyyy") // yyyy/mm/dd  Date Format
     var ocsExpiryDate = ocsDateFormat.parse("12/12/2022")  // Expiry Date.
@@ -75,18 +75,36 @@ class OCSSingleToneClassELT2 {
                     extendedLicense = ExtendedLicense.getLicense(this.readBytes())
                 }.close()
 
+                extendedLicense.masterCode = ocsMasterCode
                 extendedLicenseFrame = extendedLicense.generateConfigForDedicatedLock(
                     ocsLockNumber,
                     ocsMasterCode, ocsUserCode, ocsBlockKeypad,
                     ocsBuzzOn,
-                    ocsLEDType, ocsExpiryDate, ocsAutomaticClosing
+                    Led.LED_ON_2_SECONDS_TYPE, ocsExpiryDate, ocsAutomaticClosing
                 )
 
-                Log.e("OCS_", extendedLicense.masterCode)
+                Log.e("OCS_Master", ocsMasterCode  + " vs " + extendedLicense.masterCode +" : User code : " + ocsUserCode)
 
             } catch (e: IOException) {
                 e.printStackTrace()
                 Log.e("tag", e.localizedMessage)
+                iapiOcsLockCallback.onOCSLockScanError("" + e.localizedMessage)
+            }
+        }
+    }
+
+    constructor(
+        activity: Activity,
+        iapiOcsLockCallback: IAPIOCSLockCallback
+    ) {
+
+        this.iapiOcsLockCallback = iapiOcsLockCallback
+
+        activity.runOnUiThread {
+            try {
+                ocsLockSmartManager = OcsSmartManager(activity)
+            } catch (e: IOException) {
+                e.printStackTrace()
                 iapiOcsLockCallback.onOCSLockScanError("" + e.localizedMessage)
             }
         }
@@ -112,7 +130,26 @@ class OCSSingleToneClassELT2 {
                         ocsLockSmartManager.stopScan()
                         connectAndConfigureLock(ocsLock, extendedLicenseFrame)
                     }
+                }
+            }, OcsSmartManager.ScanType.MAINTENANCE
+        )
+    }
 
+    fun onScanNormalScan() {
+        ocsLockSmartManager.startScanMaintenance(
+            Constants.DEFAULT_MAINTENANCE_PROXIMITY_SCAN_TIMEOUT,
+            object : ScanCallback {
+
+                override fun onCompletion() {
+                    ocsLockSmartManager.stopScan()
+                }
+
+                override fun onError(error: OcsSmartManager.OcsSmartManagerError?) {
+                    iapiOcsLockCallback.onOCSLockScanError(error)
+                }
+
+                override fun onSearchResult(ocsLock: OcsLock?) {
+                    iapiOcsLockCallback.onOCSLockScanDeviceFound(ocsLock)
                 }
             }, OcsSmartManager.ScanType.MAINTENANCE
         )
@@ -130,21 +167,26 @@ class OCSSingleToneClassELT2 {
                 }
 
                 override fun onSuccess(p0: String?) {
-                    Log.e("OCS_onSuccess", p0!!)
-                    var event = Event.getEventFromFrame(p0)
 
+                    var event = Event.getEventFromFrame(p0)
                     if (event.eventCode == Event.EV_INITIALIZATION) {
+                        Log.e("OCS_onSuccess", "start config")
                         configuredLock()
+                    }else{
+                        Log.e("OCS_onFailure", event.userCode)
+                        iapiOcsLockCallback.onOCSLockConnectionError(""+ event.isSuccessEvent)
                     }
                 }
             })
     }
 
     fun configuredLock() {
-        Log.e("OCS_con_", " configuredLock")
+        Log.e("OCS_configuredLock : ", ocsMasterCode  + " vs " + extendedLicense.masterCode +" : User code : " + ocsUserCode)
+
         var licenceByteArray =
             extendedLicense.getUserFrameDedicatedLocksString(ocsListofLockNumber, ocsUserCode)
         licence = License.getLicense(licenceByteArray)
+
 
         ocsLockSmartManager.startScan(
             licence, Constants.DEFAULT_USER_SMART_SCAN_TIMEOUT,

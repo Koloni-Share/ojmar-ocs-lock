@@ -30,17 +30,30 @@ class OCSSingleToneClassELT1 : ProcessCallback {
 
     lateinit var licence: License
     lateinit var extendedLicense: ExtendedLicense
-    var arrListOfLockNumber: IntArray = intArrayOf(12)  // List of Lock Number
-    var strMasterCode = "000000" // Master Code
-    var strUserCode = "1234" // User Code
-    var lockNum = 12 // Lock Number
     var format = SimpleDateFormat("MM/dd/yyyy") // yyyy/mm/dd  Date Format
     var selectedDate = format.parse("12/12/2022")  // Expiry Date.
 
-    constructor(iapiOcsLockCallback: IAPIOCSLockCallback, activity: Activity) {
+    var ocsListofLockNumber: IntArray = intArrayOf(12)  // List of Lock Number
+    var ocsUserCode = "" // User Code
+    var ocsMasterCode = "" // User Code
+    var ocsMACAddress = "" // User Code
+    var ocsLockNumber = 12 // Lock Number
+
+    constructor(
+        iapiOcsLockCallback: IAPIOCSLockCallback, activity: Activity,
+        ocsLockNumber: Int, ocsListofLockNumber: IntArray, ocsUserCode: String,
+        ocsMasterCode: String, macAddress: String
+    ) {
 
         this.iapiOcsLockCallback = iapiOcsLockCallback
         this.activity = activity
+
+        this.ocsLockNumber = ocsLockNumber
+        this.ocsListofLockNumber = ocsListofLockNumber
+        this.ocsUserCode = ocsUserCode
+        this.ocsMasterCode = ocsMasterCode
+        this.ocsMACAddress = macAddress
+
 
         activity.runOnUiThread {
             try {
@@ -50,38 +63,27 @@ class OCSSingleToneClassELT1 : ProcessCallback {
                     extendedLicense = ExtendedLicense.getLicense(this.readBytes())
                 }.close()
 
+                extendedLicense.masterCode = ocsMasterCode
+                extendedLicense.generateConfigForDedicatedLock(
+                    ocsLockNumber,
+                    ocsMasterCode, ocsUserCode, true,
+                    true,
+                    Led.LED_ON_2_SECONDS_TYPE, selectedDate, false
+                )
+
                 licence = License.getLicense(
                     extendedLicense.getUserFrameDedicatedLocksString(
-                        arrListOfLockNumber,
-                        strUserCode
+                        ocsListofLockNumber,
+                        ocsUserCode
                     )
                 )
-
-                extendedLicense.generateConfigForDedicatedLock(
-                    lockNum,
-                    strMasterCode, strUserCode, true,
-                    true,
-                    Led.LED_ON_900_MILLIS_TYPE, selectedDate, false
-                )
-
             } catch (e: IOException) {
                 e.printStackTrace()
                 Log.e("tag", e.localizedMessage)
             }
         }
 
-        Log.e("OCS_Dedi___", "" + licence.userCodeDedicated)
-        Log.e("OCS_Free___", "" + licence.userCodeFree)
-        Log.e("OCS_CodLen___", "" + licence.userCodeLength)
-        Log.e("OCS_isMLic___", "" + licence.isMultiLicense)
-        Log.e("OCS_isMLic___", "" + extendedLicense.masterCode)
-        Log.e("OCS_isMLic___", "" + extendedLicense.hasGenUserLicense)
-        Log.e("OCS_isMLic___", "" + extendedLicense.userCodeLength)
-        Log.e("OCS_isMLic___", "" + extendedLicense.hasFirstInitUse)
-        Log.e("OCS_isMLic___", "" + extendedLicense.idLicense)
-        Log.e("OCS_isMLic___", "" + licence.idLicense)
-        Log.e("OCS_isMLic___", "" + licence.frame)
-
+        Log.e("OCS_Master", ocsMasterCode  + " vs " + extendedLicense.masterCode +" : User code : " + ocsUserCode + " vs " + licence.userCodeDedicated)
 
         for (i in licence.dedicatedLocks.indices) {
             Log.e("OCS_dedi_list", "" + licence.dedicatedLocks.get(i))
@@ -94,6 +96,7 @@ class OCSSingleToneClassELT1 : ProcessCallback {
 
     fun startOCSLockScan(timeOutSeconds: Int) {
         if (ocsLockSmartManager != null) {
+            ocsLockSmartManager.stopScan()
             ocsLockSmartManager.startScanMaintenance(
                 timeOutSeconds,
                 mLeScanCallback, OcsSmartManager.ScanType.MAINTENANCE
@@ -102,11 +105,10 @@ class OCSSingleToneClassELT1 : ProcessCallback {
         }
     }
 
-    fun connectToOCSLock(password: String, macAddress: String, timeOutSeconds: Int) {
+    fun connectToOCSLock(password: String, timeOutSeconds: Int) {
         if (ocsLockSmartManager != null) {
             activity.runOnUiThread {
-                ocsLockSmartManager.stopScan()
-                reconnectAndSendNodeFunc(password, macAddress, timeOutSeconds)
+                reconnectAndSendNodeFunc(password, ocsMACAddress, timeOutSeconds)
             }
         }
     }
@@ -123,7 +125,7 @@ class OCSSingleToneClassELT1 : ProcessCallback {
             timeOutSeconds, licence.frame, this
         )
 
-    // Also try with below frame , but issue is invalid frame exception (instead of licence.frame)
+        // Also try with below frame , but issue is invalid frame exception (instead of licence.frame)
 //        var passFrame = extendedLicense.getUserFrameDedicatedLocksString(
 //            arrListOfLockNumber,
 //            strUserCode
@@ -145,6 +147,15 @@ class OCSSingleToneClassELT1 : ProcessCallback {
 //                onConnectAnsSendResult(p0)
                 Log.e("OCS_scan_se_", " " + p0?.lockNumber + " " + p0?.lockType)
                 iapiOcsLockCallback.onOCSLockScanDeviceFound(p0)
+
+                if(p0?.lockNumber == ocsLockNumber){
+                    ocsLockSmartManager.stopScan()
+                    connectToOCSLock(
+                        ocsUserCode,
+                        5
+                    )
+                }
+
 
 //                var passFrame = extendedLicense.getUserFrameDedicatedLocksString(
 //                    arrListOfLockNumber,
@@ -195,29 +206,5 @@ class OCSSingleToneClassELT1 : ProcessCallback {
         iapiOcsLockCallback.onOCSLockConnectionSuccess(p0, eventManager.isSuccessEvent)
     }
 
-    // 3284 user code.  SEND_NACK
-
-//    fun selectData() {
-//
-//        try {
-//            activity.getBaseContext().getContentResolver().openInputStream(data.getData())
-//                .use { inputStream ->
-//                    val buffer = ByteArray(4096)
-//                    val ous = ByteArrayOutputStream()
-//                    var read: Int
-//                    while (inputStream?.read(buffer).also { read = it!! } != -1) {
-//                        ous.write(buffer, 0, read)
-//                    }
-//                    inputStream?.close()
-//                    val extendedLicense: ExtendedLicense =
-//                        ExtendedLicense.getLicense(ous.toByteArray())
-////                            licenseFileLoaded(extendedLicense)
-//                }
-//        } catch (e: IOException) {
-////                    makeShortToast(getString(R.string.non_valid_license_file))
-//        } catch (e: LicenseException) {
-////                    makeShortToast(getString(R.string.non_valid_license_file))
-//        }
-//    }
-
+    // 4567  123456 // 1234 000000
 }
