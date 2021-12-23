@@ -106,7 +106,7 @@ class OCSMainActivity : AppCompatActivity(), IAPIOCSLockCallback {
             onZoomOutAnimRelative(this@OCSMainActivity, appBtnConnect)
             try {
                 llProgressBar.visibility = View.VISIBLE
-                ocsSingleToneClass?.onScanOCSForExtendedLicence(lockMacID)
+                ocsSingleToneClass?.onScanOCSForExtendedLicence()
 
             } catch (e: Exception) {
                 llProgressBar.visibility = View.GONE

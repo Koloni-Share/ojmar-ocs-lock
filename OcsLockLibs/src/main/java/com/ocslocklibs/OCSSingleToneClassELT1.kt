@@ -64,12 +64,6 @@ class OCSSingleToneClassELT1 : ProcessCallback {
                 }.close()
 
                 extendedLicense.masterCode = ocsMasterCode
-                extendedLicense.generateConfigForDedicatedLock(
-                    ocsLockNumber,
-                    ocsMasterCode, ocsUserCode, true,
-                    true,
-                    Led.LED_ON_2_SECONDS_TYPE, selectedDate, false
-                )
 
                 licence = License.getLicense(
                     extendedLicense.getUserFrameDedicatedLocksString(
@@ -77,6 +71,14 @@ class OCSSingleToneClassELT1 : ProcessCallback {
                         ocsUserCode
                     )
                 )
+
+                extendedLicense.generateConfigForDedicatedLock(
+                    ocsLockNumber,
+                    ocsMasterCode, ocsUserCode, true,
+                    true,
+                    Led.LED_ON_2_SECONDS_TYPE, selectedDate, false
+                )
+
             } catch (e: IOException) {
                 e.printStackTrace()
                 Log.e("tag", e.localizedMessage)
