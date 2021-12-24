@@ -94,7 +94,7 @@ class OCSSingleToneClassELT2 {
             } catch (e: IOException) {
                 e.printStackTrace()
                 Log.e("tag", e.localizedMessage)
-                iapiOcsLockCallback.onOCSLockScanError("" + e.localizedMessage)
+//                iapiOcsLockCallback.onOCSLockScanError("" + e.localizedMessage)
             }
         }
     }
@@ -113,7 +113,7 @@ class OCSSingleToneClassELT2 {
             } catch (e: IOException) {
                 e.printStackTrace()
                 activity.runOnUiThread {
-                    iapiOcsLockCallback.onOCSLockScanError("" + e.localizedMessage)
+//                    iapiOcsLockCallback.onOCSLockScanError("" + e.localizedMessage)
                 }
 
             }
@@ -197,7 +197,7 @@ class OCSSingleToneClassELT2 {
                             onScanOCSForExtendedLicence()
                             Log.e("OCS_fail_eve",  "" + event.eventCode)
                             // Event.EV_NON_VALID_MASTER_CODE
-                            iapiOcsLockCallback.onOCSLockConnectionError(""+ event.isSuccessEvent)
+//                            iapiOcsLockCallback.onOCSLockConnectionError(""+ event.isSuccessEvent)
                         }
 
                     }

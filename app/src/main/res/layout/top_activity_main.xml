@@ -72,7 +72,7 @@
             android:background="@color/design_default_color_error"
             android:text="@string/way_2"
             android:textColor="@color/white"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
     </LinearLayout>
 

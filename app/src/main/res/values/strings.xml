@@ -6,7 +6,7 @@
     <string name="enter_mac_address_and_press_connect">Enter Mac Address and press Lock/Unlock, mac address format must be like this : 80:E1:26:08:1C:01</string>
     <string name="enter_four_digit_passsowrd">Enter Four Digit Password.</string>
     <string name="enter_six_digit_master_code">Enter Six Digit Master code.</string>
-    <string name="way_1">Way 1</string>
+    <string name="way_1">Next</string>
     <string name="way_2">Way 2</string>
     <string name="wait_msg">Processing, Please wait...</string>
 </resources>
