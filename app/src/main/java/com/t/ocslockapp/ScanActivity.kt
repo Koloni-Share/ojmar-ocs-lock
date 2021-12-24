@@ -120,8 +120,21 @@ class ScanActivity : AppCompatActivity(), IAPIOCSLockCallback {
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ) !== PackageManager.PERMISSION_GRANTED || checkSelfPermission(
                     Manifest.permission.ACCESS_FINE_LOCATION
-                ) !== PackageManager.PERMISSION_GRANTED || checkSelfPermission(
+                ) !== PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(
                     Manifest.permission.ACCESS_MEDIA_LOCATION
+                ) !== PackageManager.PERMISSION_GRANTED
+                ||
+                checkSelfPermission(
+                    Manifest.permission.BLUETOOTH_SCAN
+                ) !== PackageManager.PERMISSION_GRANTED
+                ||
+                checkSelfPermission(
+                    Manifest.permission.BLUETOOTH_ADVERTISE
+                ) !== PackageManager.PERMISSION_GRANTED
+                ||
+                checkSelfPermission(
+                    Manifest.permission.BLUETOOTH_CONNECT
                 ) !== PackageManager.PERMISSION_GRANTED
 
             ) {
@@ -129,7 +142,10 @@ class ScanActivity : AppCompatActivity(), IAPIOCSLockCallback {
                     arrayOf(
                         Manifest.permission.ACCESS_COARSE_LOCATION,
                         Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_MEDIA_LOCATION
+                        Manifest.permission.ACCESS_MEDIA_LOCATION,
+                        Manifest.permission.BLUETOOTH_SCAN,
+                        Manifest.permission.BLUETOOTH_ADVERTISE,
+                        Manifest.permission.BLUETOOTH_CONNECT
                     ),
                     MY_PERMISSION_LOCATION
                 )
@@ -148,7 +164,10 @@ class ScanActivity : AppCompatActivity(), IAPIOCSLockCallback {
         if (requestCode == MY_PERMISSION_LOCATION &&
             grantResults[0] == PackageManager.PERMISSION_GRANTED && requestCode == MY_PERMISSION_LOCATION &&
             grantResults[1] == PackageManager.PERMISSION_GRANTED && requestCode == MY_PERMISSION_LOCATION &&
-            grantResults[2] == PackageManager.PERMISSION_GRANTED && requestCode == MY_PERMISSION_LOCATION
+            grantResults[2] == PackageManager.PERMISSION_GRANTED && requestCode == MY_PERMISSION_LOCATION &&
+            grantResults[3] == PackageManager.PERMISSION_GRANTED && requestCode == MY_PERMISSION_LOCATION &&
+            grantResults[4] == PackageManager.PERMISSION_GRANTED && requestCode == MY_PERMISSION_LOCATION &&
+            grantResults[5] == PackageManager.PERMISSION_GRANTED && requestCode == MY_PERMISSION_LOCATION
         ) {
 
         }
