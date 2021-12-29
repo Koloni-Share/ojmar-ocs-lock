@@ -17,10 +17,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.ocslocklibs.OCSSingleToneClassELT2
+import com.ocslocklibs.OCSSingleToneClassELT3
 import com.ocslocklibs.interfacePackage.IAPIOCSLockCallback
 import com.ondo.ocssmartlibrary.OcsLock
 import com.ondo.ocssmartlibrary.OcsSmartManager
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ScanActivity : AppCompatActivity(), IAPIOCSLockCallback {
 
@@ -32,7 +36,7 @@ class ScanActivity : AppCompatActivity(), IAPIOCSLockCallback {
 
     private var ocsListAdapter: OcsListAdapter? = null
     var listOCSLock = ArrayList<OcsLock?>()
-    var ocsSingleToneClass: OCSSingleToneClassELT2? = null
+    var ocsSingleToneClass: OCSSingleToneClassELT3? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +50,7 @@ class ScanActivity : AppCompatActivity(), IAPIOCSLockCallback {
 
     private fun initOcs() {
 
-        ocsSingleToneClass = OCSSingleToneClassELT2(
+        ocsSingleToneClass = OCSSingleToneClassELT3(
             this@ScanActivity, this@ScanActivity
         )
     }
@@ -111,6 +115,14 @@ class ScanActivity : AppCompatActivity(), IAPIOCSLockCallback {
 
     override fun onOCSLockConnectionSuccess(successString: String?, isSuccess: Boolean) {
         llProgressBar.visibility = View.GONE
+    }
+
+    override fun onOCSLockConfigurationDone() {
+
+    }
+
+    override fun onOCSLockConfigurationError(errorMessage: String) {
+
     }
 
     private fun marshmallowGPSPremissionCheck() {
@@ -185,9 +197,15 @@ class ScanActivity : AppCompatActivity(), IAPIOCSLockCallback {
 
     fun onConnectToOcsLock(position: Int, ocsLock: OcsLock) {
 
-        var intent = Intent(this@ScanActivity, MasterActivity::class.java)
+        dOCSLock = ocsLock
+        var intent = Intent(this@ScanActivity, PasswordActivity::class.java)
         intent.putExtra("lockNumber", ocsLock.lockNumber)
         intent.putExtra("lockMacID", ocsLock.tag)
         startActivity(intent)
+
+    }
+
+    companion object{
+        var dOCSLock: OcsLock? = null
     }
 }

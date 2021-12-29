@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transperent_buy">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_7sdp"
+        android:layout_marginTop="@dimen/_40sdp"
+        android:layout_marginRight="@dimen/_7sdp"
+        app:cardCornerRadius="@dimen/_15sdp"
+        app:cardElevation="0dp">
+
+        <LinearLayout
+            android:id="@+id/llMain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_15sdp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginBottom="@dimen/_7sdp"
+                android:background="@drawable/rounded_inventory_gredient"
+                android:paddingTop="@dimen/_2sdp"
+                android:paddingBottom="@dimen/_2sdp">
+
+                <TextView
+                    android:id="@+id/tvRefundTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:text="Set User and Master Code"
+                    android:textColor="@color/color_white"
+                    android:textSize="@dimen/_14sdp" />
+
+
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:background="@color/color_white"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/llPasswordView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:text="@string/enter_four_digit_passsowrd"
+                        android:textColor="@color/black"
+                        android:textSize="15dp"
+                        android:visibility="visible" />
+
+                    <EditText
+                        android:id="@+id/edtPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/btn_bg_edittext"
+                        android:digits="0123456789"
+                        android:hint="1234"
+                        android:inputType="number"
+                        android:maxLength="6"
+                        android:paddingLeft="@dimen/_10sdp"
+                        android:text="1234"
+                        android:visibility="visible" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:text="@string/enter_six_digit_master_code"
+                        android:textColor="@color/black"
+                        android:textSize="15dp"
+                        android:visibility="visible" />
+
+                    <EditText
+                        android:id="@+id/edtMasterCode"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/btn_bg_edittext"
+                        android:digits="0123456789"
+                        android:hint="123456"
+                        android:inputType="number"
+                        android:maxLength="6"
+                        android:paddingLeft="@dimen/_10sdp"
+                        android:text="000000"
+                        android:visibility="visible" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/appSave"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="50dp"
+                        android:background="@drawable/btn_circular_background"
+                        android:text="@string/way_1"
+                        android:textColor="@color/white"
+                        android:visibility="visible" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>
+
+

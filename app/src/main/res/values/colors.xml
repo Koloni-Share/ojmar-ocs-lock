@@ -7,4 +7,23 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="color_white">#ffffff</color>
+    <color name="color_white_trans">#B4FFFFFF</color>
+    <color name="color_white_trans_two">#B4FFFFFF</color>
+    <color name="color_white_trans_one">#00FFFFFF</color>
+    <color name="warning_color">#ff4d53</color>
+    <color name="finish_bg">#D3020D</color>
+    <color name="color_black">#111111</color>
+    <color name="color_black_trans">#34111111</color>
+    <color name="color_login_black">#282828</color>
+    <color name="login_seprated">#bfbfbf</color>
+    <color name="transperent_buy">#00000000</color>
+
+    <color name="login_grey_text_color">#9b9b9b</color>
+    <color name="login_grey_edit_text_color">#f4f4f4</color>
+    <color name="login_grey_edit_text_color_non_editable">#f9f9f9</color>
+    <color name="login_app_gredient_color_one">#4a42ea</color>
+    <color name="login_app_gredient_color_two">#fb4671</color>
+    <color name="login_app_gredient_color_three">#0706D2DD</color>
 </resources>

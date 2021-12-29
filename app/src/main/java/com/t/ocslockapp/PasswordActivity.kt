@@ -4,14 +4,15 @@ import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
-import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
+import com.google.gson.Gson
+import com.ondo.ocssmartlibrary.OcsLock
 
-class MasterActivity : AppCompatActivity() {
+class PasswordActivity : AppCompatActivity() {
 
     lateinit var appBtnWay1: AppCompatButton
     lateinit var appBtnWay2: AppCompatButton
@@ -40,11 +41,12 @@ class MasterActivity : AppCompatActivity() {
             lockMacID = intent.getStringExtra("lockMacID").toString()
         }
 
+
         appBtnWay1.setOnClickListener {
-            onZoomOutAnimRelative(this@MasterActivity, appBtnWay1)
+            onZoomOutAnimRelative(this@PasswordActivity, appBtnWay1)
             if (edtPassword.text.toString().length > 0 && edtMasterCode.text.toString().length > 0) {
                 try {
-                    var intent = Intent(this@MasterActivity, OCSMainActivity::class.java)
+                    var intent = Intent(this@PasswordActivity, OCSLockUnlockActivity1::class.java)
                     intent.putExtra("lockNumber", lockNumber)
                     intent.putExtra("lockMacID", lockMacID)
                     intent.putExtra("masterCode", edtMasterCode.text.toString())
@@ -52,15 +54,14 @@ class MasterActivity : AppCompatActivity() {
                     startActivity(intent)
                 } catch (e: Exception) {
                     Toast.makeText(
-                        this@MasterActivity,
+                        this@PasswordActivity,
                         "Exception " + e.localizedMessage,
                         Toast.LENGTH_SHORT
-                    )
-                        .show()
+                    ).show()
                 }
             } else {
                 Toast.makeText(
-                    this@MasterActivity,
+                    this@PasswordActivity,
                     "Please Enter User Password and Master code",
                     Toast.LENGTH_SHORT
                 ).show()
@@ -68,10 +69,10 @@ class MasterActivity : AppCompatActivity() {
         }
 
         appBtnWay2.setOnClickListener {
-            onZoomOutAnimRelative(this@MasterActivity, appBtnWay2)
+            onZoomOutAnimRelative(this@PasswordActivity, appBtnWay2)
             if (edtPassword.text.toString().length > 0 && edtMasterCode.text.toString().length > 0) {
                 try {
-                    var intent = Intent(this@MasterActivity, MainActivity::class.java)
+                    var intent = Intent(this@PasswordActivity, OCSLockUnlockActivity2::class.java)
                     intent.putExtra("lockNumber", lockNumber)
                     intent.putExtra("lockMacID", lockMacID)
                     intent.putExtra("masterCode", edtMasterCode.text.toString())
@@ -79,20 +80,24 @@ class MasterActivity : AppCompatActivity() {
                     startActivity(intent)
                 } catch (e: Exception) {
                     Toast.makeText(
-                        this@MasterActivity,
+                        this@PasswordActivity,
                         "Exception " + e.localizedMessage,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
             } else {
                 Toast.makeText(
-                    this@MasterActivity,
+                    this@PasswordActivity,
                     "Please Enter User Password and Master code",
                     Toast.LENGTH_SHORT
                 ).show()
             }
 
         }
+    }
+
+    fun testProcess(){
+
     }
 
     fun onZoomOutAnimRelative(activity: Activity?, imageView: AppCompatButton) {

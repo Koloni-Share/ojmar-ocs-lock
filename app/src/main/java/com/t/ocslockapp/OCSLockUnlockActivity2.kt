@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,49 +15,39 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.ocslocklibs.OCSSingleToneClassELT2
+import com.ocslocklibs.OCSSingleToneClassELT1
 import com.ocslocklibs.interfacePackage.IAPIOCSLockCallback
 import com.ondo.ocssmartlibrary.OcsLock
 import com.ondo.ocssmartlibrary.OcsSmartManager
-import java.text.SimpleDateFormat
 
-class OCSMainActivity : AppCompatActivity(), IAPIOCSLockCallback {
+class OCSLockUnlockActivity2 : AppCompatActivity(), IAPIOCSLockCallback {
 
     private val MY_PERMISSION_LOCATION = 0
-
-    //    lateinit var appBtnScan: AppCompatButton
+    lateinit var appBtnScan: AppCompatButton
     lateinit var appBtnConnect: AppCompatButton
     lateinit var rcvOCSLock: RecyclerView
     lateinit var llProgressBar: LinearLayout
 
     //    lateinit var edtMacID: EditText
     lateinit var edtPassword: EditText
-    lateinit var tvOcsLockNumber: TextView
-    lateinit var tvOcsMACID: TextView
-    lateinit var tvOcsMasterCode: TextView
-    lateinit var tvOcsUserCode: TextView
     private var mLayoutManager: LinearLayoutManager? = null
 
     private var ocsListAdapter: OcsListAdapter? = null
     var listOCSLock = ArrayList<OcsLock?>()
     private var lockPosition = 0;
-    var ocsSingleToneClass: OCSSingleToneClassELT2? = null
-
-    var ocsListofLockNumber: IntArray = intArrayOf(12)  // List of Lock Number
+    var ocsSingleToneClass: OCSSingleToneClassELT1? = null
+    lateinit var tvOcsLockNumber: TextView
+    lateinit var tvOcsMACID: TextView
+    lateinit var tvOcsMasterCode: TextView
+    lateinit var tvOcsUserCode: TextView
+    var ocsLockNumber = 12 // Lock Number
     var ocsMasterCode = "" // Master Code
     var ocsUserCode = "" // User Code
-    var ocsLockNumber = 12 // Lock Number
     var lockMacID = "" // Lock MAC
-    var ocsDateFormat = SimpleDateFormat("MM/dd/yyyy") // yyyy/mm/dd  Date Format
-    var ocsExpiryDate = ocsDateFormat.parse("12/12/2022")  // Expiry Date.
-    var ocsBlockKeypad = true
-    var ocsAutomaticClosing = false
-    var ocsBuzzOn = true
-    val LED_ON_900_MILLIS_TYPE = 1
+    var ocsListofLockNumber: IntArray = intArrayOf(12)  // List of Lock Number
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,13 +56,10 @@ class OCSMainActivity : AppCompatActivity(), IAPIOCSLockCallback {
         initView()
         initOcs()
 
-
     }
 
-    private fun initOcs() {
 
-        ocsDateFormat = SimpleDateFormat("dd/MM/yyyy")
-        ocsExpiryDate = ocsDateFormat.parse("31/12/2022")
+    private fun initOcs() {
 
         if (intent.hasExtra("lockNumber")) {
             ocsLockNumber = intent.getIntExtra("lockNumber", 0)
@@ -95,79 +83,102 @@ class OCSMainActivity : AppCompatActivity(), IAPIOCSLockCallback {
         tvOcsMasterCode.setText("Lock Master Code : " + ocsMasterCode)
         tvOcsUserCode.setText("Lock User Code : " + ocsUserCode)
 
-        ocsSingleToneClass = OCSSingleToneClassELT2(
-            this@OCSMainActivity,
-            ocsListofLockNumber, ocsMasterCode, ocsUserCode, ocsLockNumber,
-            ocsDateFormat, ocsExpiryDate, ocsBlockKeypad, ocsAutomaticClosing, ocsBuzzOn,
-            LED_ON_900_MILLIS_TYPE, this@OCSMainActivity
+        ocsSingleToneClass = OCSSingleToneClassELT1(
+            this@OCSLockUnlockActivity2,
+            this@OCSLockUnlockActivity2,
+            ocsLockNumber,
+            ocsListofLockNumber,
+            ocsUserCode,
+            ocsMasterCode,
+            lockMacID
         )
-
-        appBtnConnect.setOnClickListener {
-            onZoomOutAnimRelative(this@OCSMainActivity, appBtnConnect)
-            try {
-                llProgressBar.visibility = View.VISIBLE
-                ocsSingleToneClass?.onScanOCSForExtendedLicence()
-
-            } catch (e: Exception) {
-                llProgressBar.visibility = View.GONE
-                Toast.makeText(
-                    this@OCSMainActivity,
-                    "Exception : " + e.localizedMessage,
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
-            }
-        }
     }
 
     private fun initView() {
 
         appBtnConnect = findViewById(R.id.appBtnConnect)
+        appBtnScan = findViewById(R.id.appBtnScan)
         rcvOCSLock = findViewById(R.id.rcvOCSLock)
         llProgressBar = findViewById(R.id.llProgressBar)
-        tvOcsLockNumber = findViewById(R.id.tvOcsLockNumber)
-        tvOcsMACID = findViewById(R.id.tvOcsMACID)
-        edtPassword = findViewById(R.id.edtPassword)
         tvOcsUserCode = findViewById(R.id.tvOcsUserCode)
         tvOcsMasterCode = findViewById(R.id.tvOcsMasterCode)
+//        edtMacID = findViewById(R.id.edtMacID)
+        edtPassword = findViewById(R.id.edtPassword)
+        tvOcsLockNumber = findViewById(R.id.tvOcsLockNumber)
+        tvOcsMACID = findViewById(R.id.tvOcsMACID)
 
         listOCSLock.clear()
 
-
-        mLayoutManager = LinearLayoutManager(this@OCSMainActivity)
+        mLayoutManager = LinearLayoutManager(this@OCSLockUnlockActivity2)
         rcvOCSLock!!.layoutManager = mLayoutManager
 
-        ocsListAdapter = OcsListAdapter(this@OCSMainActivity, listOCSLock)
+//        appBtnScan.setOnClickListener {
+//            onZoomOutAnimRelative(this@MainActivity, appBtnScan)
+//            llProgressBar.visibility = View.VISIBLE
+//            Toast.makeText(this@MainActivity, "Scan Started.", Toast.LENGTH_SHORT).show()
+//            ocsSingleToneClass?.startOCSLockScan(5)
+//        }
+
+        appBtnConnect.setOnClickListener {
+            onZoomOutAnimRelative(this@OCSLockUnlockActivity2, appBtnConnect)
+            try {
+                llProgressBar.visibility = View.VISIBLE
+                ocsSingleToneClass?.startOCSLockScan(5)
+            } catch (e: Exception) {
+                llProgressBar.visibility = View.GONE
+                Toast.makeText(
+                    this@OCSLockUnlockActivity2,
+                    "Exception : " + e.localizedMessage,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+        ocsListAdapter = OcsListAdapter(this@OCSLockUnlockActivity2, listOCSLock)
         rcvOCSLock.adapter = ocsListAdapter
     }
 
 
+//    fun onConnectToOcsLock(position: Int, ocsLock: OcsLock) {
+//
+//        if (edtPassword.text.toString().length > 0) {
+//            lockPosition = position
+//            llProgressBar.visibility = View.VISIBLE
+//            ocsSingleToneClass?.connectToOCSLock(edtPassword.text.toString(), ocsLock.tag, 5)
+//        } else {
+//            Toast.makeText(
+//                this@MainActivity,
+//                "Please Enter four digit password.",
+//                Toast.LENGTH_SHORT
+//            )
+//                .show()
+//        }
+//    }
+
     override fun onDestroy() {
         super.onDestroy()
+        ocsSingleToneClass?.onClearOCSLockProcess()
     }
 
     override fun onOCSLockScanCompleted() {
-        Handler(Looper.getMainLooper()).post {
-            llProgressBar.visibility = View.GONE
-            Toast.makeText(
-                this@OCSMainActivity,
-                "Scan Completed and start connecting...",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+//        Handler(Looper.getMainLooper()).post {
+//            llProgressBar.visibility = View.GONE
+//            Toast.makeText(
+//                this@MainActivity,
+//                "Scan Completed and start connecting...",
+//                Toast.LENGTH_SHORT
+//            ).show()
+//
+//            ocsSingleToneClass?.connectToOCSLock(
+//                ocsUserCode,
+//                5
+//            )
+//        }
     }
 
     override fun onOCSLockScanError(error: OcsSmartManager.OcsSmartManagerError?) {
         Handler(Looper.getMainLooper()).post {
-            llProgressBar.visibility = View.GONE
-            Toast.makeText(this@OCSMainActivity, error.toString(), Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    override fun onOCSLockScanError(error: String) {
-        Handler(Looper.getMainLooper()).post {
-            llProgressBar.visibility = View.GONE
-            Toast.makeText(this@OCSMainActivity, error, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@OCSLockUnlockActivity2, error.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -181,13 +192,14 @@ class OCSMainActivity : AppCompatActivity(), IAPIOCSLockCallback {
     override fun onOCSLockConnectionError(error: String) {
         llProgressBar.visibility = View.GONE
         Handler(Looper.getMainLooper()).post {
-            Toast.makeText(this@OCSMainActivity, error.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@OCSLockUnlockActivity2, error.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onOCSLockConnectionSuccess(successString: String?, isSuccess: Boolean) {
         Handler(Looper.getMainLooper()).post {
             llProgressBar.visibility = View.GONE
+
             if (isSuccess) {
 //                Toast.makeText(
 //                    this@MainActivity,
@@ -196,7 +208,7 @@ class OCSMainActivity : AppCompatActivity(), IAPIOCSLockCallback {
 //                ).show()
             } else {
                 Toast.makeText(
-                    this@OCSMainActivity,
+                    this@OCSLockUnlockActivity2,
                     "Wrong Password or any other Error.",
                     Toast.LENGTH_SHORT
                 ).show()
@@ -204,6 +216,14 @@ class OCSMainActivity : AppCompatActivity(), IAPIOCSLockCallback {
 
             ocsListAdapter?.notifyDataSetChanged()
         }
+    }
+
+    override fun onOCSLockConfigurationDone() {
+
+    }
+
+    override fun onOCSLockConfigurationError(errorMessage: String) {
+
     }
 
     private fun marshmallowGPSPremissionCheck() {
@@ -254,6 +274,13 @@ class OCSMainActivity : AppCompatActivity(), IAPIOCSLockCallback {
             imageView.startAnimation(animZoomOut)
         } catch (e: Resources.NotFoundException) {
             e.printStackTrace()
+        }
+    }
+
+    override fun onOCSLockScanError(error: String) {
+        Handler(Looper.getMainLooper()).post {
+            llProgressBar.visibility = View.GONE
+            Toast.makeText(this@OCSLockUnlockActivity2, error, Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -12,7 +12,6 @@
         android:layout_margin="15dp"
         android:orientation="vertical">
 
-
         <LinearLayout
             android:id="@+id/llProgressBar"
             android:layout_width="match_parent"
@@ -35,20 +34,51 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
                 android:gravity="center"
-                android:text="@string/wait_msg"
+                android:text="@string/scanning"
                 android:textColor="@color/black"
-                android:textSize="25dp"
+                android:textSize="20dp"
                 android:visibility="visible" />
         </LinearLayout>
+
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/appBtnScan"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@color/design_default_color_error"
+            android:background="@drawable/btn_circular_background"
             android:text="@string/scan"
             android:textColor="@color/white"
             android:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/appLockUnLock"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:background="@drawable/btn_circular_background"
+            android:text="@string/lock_unlock"
+            android:textColor="@color/white"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/progressBarConnection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvOcsLockStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:visibility="gone" />
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -59,9 +89,6 @@
             android:visibility="visible">
 
         </androidx.recyclerview.widget.RecyclerView>
-
-
-
 
     </LinearLayout>
 
