@@ -303,6 +303,7 @@ class SingleScreenOperationActivity : AppCompatActivity(), IAPIOCSLockCallback {
                     ocsBuzzOn,
                     LED_ON_900_MILLIS_TYPE,
                     ocsLock,
+                    true,
                     this@SingleScreenOperationActivity
                 )
             } else {

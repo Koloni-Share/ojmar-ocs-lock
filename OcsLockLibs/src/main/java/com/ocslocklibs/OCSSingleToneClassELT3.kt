@@ -56,11 +56,11 @@ class OCSSingleToneClassELT3 {
         ocsBuzzOn: Boolean,
         ocsLEDType: Int,
         ocsLock: OcsLock?,
+        isSetMasterCode: Boolean,
         iapiOcsLockCallback: IAPIOCSLockCallback
     ) {
 
         this.ocsListofLockNumber = ocsListofLockNumber
-        this.ocsMasterCode = ocsMasterCode
         this.ocsUserCode = ocsUserCode
         this.ocsLockNumber = ocsLockNumber
         this.ocsDateFormat = ocsDateFormat
@@ -80,7 +80,12 @@ class OCSSingleToneClassELT3 {
                     extendedLicense = ExtendedLicense.getLicense(this.readBytes())
                 }.close()
 
-                extendedLicense.masterCode = ocsMasterCode
+                if (isSetMasterCode) {
+                    this.ocsMasterCode = ocsMasterCode
+                    extendedLicense.masterCode = ocsMasterCode
+                } else {
+                    this.ocsMasterCode = extendedLicense.masterCode
+                }
 
                 extendedLicenseFrame = extendedLicense.generateConfigForDedicatedLock(
                     ocsLockMaintenance!!.lockNumber,

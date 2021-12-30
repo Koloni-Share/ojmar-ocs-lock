@@ -123,7 +123,7 @@ class OCSLockUnlockActivity1 : AppCompatActivity(), IAPIOCSLockCallback {
             this@OCSLockUnlockActivity1,
             ocsListofLockNumber, ocsMasterCode, ocsUserCode, ocsLockNumber,
             ocsDateFormat, ocsExpiryDate, ocsBlockKeypad, ocsAutomaticClosing, ocsBuzzOn,
-            LED_ON_900_MILLIS_TYPE, ScanActivity.dOCSLock, this@OCSLockUnlockActivity1
+            LED_ON_900_MILLIS_TYPE, ScanActivity.dOCSLock, true, this@OCSLockUnlockActivity1
         )
 
         appBtnConnect.setOnClickListener {
