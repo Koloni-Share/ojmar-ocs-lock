@@ -6,7 +6,7 @@ import android.content.Context
 /**
  * Application class
  */
-class KoloniApplication : Application() {
+class OCSApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 

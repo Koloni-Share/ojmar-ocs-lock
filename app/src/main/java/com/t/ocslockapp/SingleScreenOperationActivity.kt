@@ -342,6 +342,7 @@ class SingleScreenOperationActivity : AppCompatActivity(), IAPIOCSLockCallback {
      *
      * @param activity
      */
+
     protected open fun hideProgressBar(activity: Activity?) {
         try {
             try {

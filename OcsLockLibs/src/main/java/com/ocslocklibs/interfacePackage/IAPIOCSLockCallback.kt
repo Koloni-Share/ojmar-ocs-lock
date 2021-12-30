@@ -11,7 +11,6 @@ interface IAPIOCSLockCallback {
     fun onOCSLockScanDeviceFound(ocsLock: OcsLock?)
     fun onOCSLockConnectionError(error: String)
     fun onOCSLockConnectionSuccess(successString: String?, isSuccess: Boolean)
-
     fun onOCSLockConfigurationDone()
     fun onOCSLockConfigurationError(errorMessage: String)
 }
