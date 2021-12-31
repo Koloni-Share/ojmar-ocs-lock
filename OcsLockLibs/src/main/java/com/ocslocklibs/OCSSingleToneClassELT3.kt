@@ -89,7 +89,7 @@ class OCSSingleToneClassELT3 {
 
                 extendedLicenseFrame = extendedLicense.generateConfigForDedicatedLock(
                     ocsLockMaintenance!!.lockNumber,
-                    ocsMasterCode, ocsUserCode, ocsBlockKeypad,
+                    this.ocsMasterCode, ocsUserCode, ocsBlockKeypad,
                     ocsBuzzOn,
                     Led.LED_ON_2_SECONDS_TYPE, ocsExpiryDate, ocsAutomaticClosing
                 )
@@ -102,7 +102,7 @@ class OCSSingleToneClassELT3 {
 
                 Log.e(
                     "OCS_Master",
-                    ocsMasterCode + " vs " + extendedLicense.masterCode + " : User code : " + ocsUserCode
+                    this.ocsMasterCode + " vs " + extendedLicense.masterCode + " : User code : " + ocsUserCode
                 )
 
             } catch (e: IOException) {
@@ -153,7 +153,7 @@ class OCSSingleToneClassELT3 {
 
                 override fun onSearchResult(ocsLock: OcsLock?) {
                     activity!!.runOnUiThread {
-                        if (ocsLock?.lockNumber!!.equals(ocsLockNumber)) {
+                        if (ocsLock?.lockNumber!! == ocsLockNumber) {
                             ocsLockSmartManager.stopScan()
                             Log.e("OCS_Scan_result", " Found " + ocsLockNumber)
                             connectAndConfigureLock(ocsLock, extendedLicenseFrame)
@@ -266,7 +266,7 @@ class OCSSingleToneClassELT3 {
                             activity!!.runOnUiThread {
                                 Log.e("OCS_scan_se_", " " + p0?.lockNumber + " " + p0?.lockType)
                                 iapiOcsLockCallback.onOCSLockScanDeviceFound(p0)
-                                if (p0?.lockNumber!!.equals(ocsLockNumber)) {
+                                if (p0?.lockNumber!! == ocsLockNumber) {
                                     ocsLockSmartManager.stopScan()
 //                                    connectToALock()
                                 }

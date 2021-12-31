@@ -3,7 +3,6 @@ package com.t.ocslockapp
 import android.Manifest
 import android.app.Activity
 import android.app.Dialog
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Build
@@ -18,8 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
-import com.ocslocklibs.OCSSingleToneClassELT2
 import com.ocslocklibs.OCSSingleToneClassELT3
 import com.ocslocklibs.interfacePackage.IAPIOCSLockCallback
 import com.ondo.ocssmartlibrary.OcsLock
@@ -56,7 +53,7 @@ class SingleScreenOperationActivity : AppCompatActivity(), IAPIOCSLockCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.single_activity)
+        setContentView(R.layout.ocs_single_activity)
         marshmallowGPSPremissionCheck()
 
         initOcs()
@@ -116,6 +113,7 @@ class SingleScreenOperationActivity : AppCompatActivity(), IAPIOCSLockCallback {
 
     override fun onDestroy() {
         super.onDestroy()
+        ocsSingleToneClass?.stopOCSScan()
     }
 
     override fun onOCSLockScanCompleted() {
@@ -270,7 +268,7 @@ class SingleScreenOperationActivity : AppCompatActivity(), IAPIOCSLockCallback {
 
         val dg = Dialog(this@SingleScreenOperationActivity)
         dg.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dg.setContentView(R.layout.dialog_user_code)
+        dg.setContentView(R.layout.ocs_dialog_user_code)
         dg.window!!.setBackgroundDrawableResource(android.R.color.transparent)
 
         val edtPassword = dg.findViewById<View>(R.id.edtPassword) as TextView
@@ -361,4 +359,5 @@ class SingleScreenOperationActivity : AppCompatActivity(), IAPIOCSLockCallback {
             e.printStackTrace()
         }
     }
+
 }

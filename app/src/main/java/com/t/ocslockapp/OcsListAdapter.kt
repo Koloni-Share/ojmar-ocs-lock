@@ -22,7 +22,7 @@ class OcsListAdapter(private val mContext: Context, private val mList: ArrayList
     RecyclerView.Adapter<OcsListAdapter.ViewHolder>() {
     var mInflater: LayoutInflater
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val v = mInflater.inflate(R.layout.inflator_item_rantal_list, parent, false)
+        val v = mInflater.inflate(R.layout.ocs_inflator_ocs_list, parent, false)
         return ViewHolder(v)
     }
 
