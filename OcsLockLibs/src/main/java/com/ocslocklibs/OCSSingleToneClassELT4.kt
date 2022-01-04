@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class OCSSingleToneClassELT3 {
+class OCSSingleToneClassELT4 {
 
     private lateinit var ocsLockSmartManager: OcsSmartManager
     private lateinit var iapiOcsLockCallback: IAPIOCSLockCallback
@@ -40,7 +40,8 @@ class OCSSingleToneClassELT3 {
     private var ocsLEDType = 1
     private var activity: Activity? = null
     private var ocsLockMaintenance: OcsLock? = null
-    private var scanDeviceCounter = 0
+    private var isSetMasterCode = false
+
 
     constructor(
         activity: Activity,
@@ -55,7 +56,6 @@ class OCSSingleToneClassELT3 {
         iapiOcsLockCallback: IAPIOCSLockCallback
     ) {
 
-        scanDeviceCounter = 0
         this.ocsListofLockNumber = ocsListofLockNumber
         this.ocsUserCode = ocsUserCode
         this.ocsLockNumber = ocsLockNumber
@@ -68,6 +68,7 @@ class OCSSingleToneClassELT3 {
         this.iapiOcsLockCallback = iapiOcsLockCallback
         this.activity = activity
         this.ocsLockMaintenance = ocsLock
+        this.isSetMasterCode = isSetMasterCode
 
         activity.runOnUiThread {
             try {
@@ -78,19 +79,18 @@ class OCSSingleToneClassELT3 {
 
                 if (isSetMasterCode) {
                     this.ocsMasterCode = ocsMasterCode
-                    extendedLicense.masterCode = ocsMasterCode
                 } else {
                     this.ocsMasterCode = extendedLicense.masterCode
                 }
 
                 extendedLicenseFrame = extendedLicense.generateConfigForDedicatedLock(
                     ocsLockMaintenance!!.lockNumber,
-                    this.ocsMasterCode, ocsUserCode, ocsBlockKeypad,
+                    extendedLicense.masterCode, ocsUserCode, ocsBlockKeypad,
                     ocsBuzzOn,
                     Led.LED_ON_2_SECONDS_TYPE, ocsExpiryDate, ocsAutomaticClosing
                 )
 
-                onPrintActionMessage("extended_licence_created_and_genetated_extended_licence_frame")
+                onPrintActionMessage("extended_licence_created_and_genetated_extended_licence_frame_with_master_code_" + extendedLicense.masterCode)
 
                 activity.runOnUiThread {
                     Handler(Looper.getMainLooper()).postDelayed({
@@ -108,7 +108,6 @@ class OCSSingleToneClassELT3 {
         iapiOcsLockCallback: IAPIOCSLockCallback
     ) {
 
-        scanDeviceCounter = 0
         this.iapiOcsLockCallback = iapiOcsLockCallback
         this.activity = activity
 
@@ -159,9 +158,7 @@ class OCSSingleToneClassELT3 {
             object : ScanCallback {
 
                 override fun onCompletion() {
-                    if(scanDeviceCounter==0){
-                        iapiOcsLockCallback.onOCSLockScanError("No locks were found. Check that Bluetooth and Location...")
-                    }
+                    stopOCSScan()
                 }
 
                 override fun onError(error: OcsSmartManager.OcsSmartManagerError?) {
@@ -172,7 +169,6 @@ class OCSSingleToneClassELT3 {
                 }
 
                 override fun onSearchResult(ocsLock: OcsLock?) {
-                    scanDeviceCounter++
                     activity!!.runOnUiThread {
                         iapiOcsLockCallback.onOCSLockScanDeviceFound(ocsLock)
                     }
@@ -199,7 +195,11 @@ class OCSSingleToneClassELT3 {
 
                     activity!!.runOnUiThread {
                         var event = Event.getEventFromFrame(p0)
-                        Event.EV_INITIALIZATION
+//                        Event.EV_INITIALIZATION
+                        if (isSetMasterCode) {
+                            extendedLicense.masterCode = ocsMasterCode
+                        }
+
                         onPrintActionMessage("extended_licence_e_connect_success_with_code_" + event.eventCode + "_flag_" + event.isSuccessEvent)
                         if (event.isSuccessEvent) {
                             var licenceByteArray =
@@ -319,20 +319,6 @@ class OCSSingleToneClassELT3 {
                 passValue = "Door is Close."
             } else {
                 passValue = "Door is Open."
-            }
-            return passValue
-        } else {
-            return ""
-        }
-    }
-
-    fun getLockStatus(ocsLock: OcsLock?): String {
-        var passValue = ""
-        if (ocsLock != null) {
-            if (ocsLock!!.lockStatus == 1) {
-                passValue = "Door is Close : " + ocsLock!!.lockStatus
-            } else {
-                passValue = "Door is Open : " + ocsLock!!.lockStatus
             }
             return passValue
         } else {

@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.animation.AnimationUtils
@@ -141,6 +142,7 @@ class SingleScreenOperationActivity : AppCompatActivity(), IAPIOCSLockCallback {
 
     override fun onOCSLockScanDeviceFound(ocsLock: OcsLock?) {
         listOCSLock.add(ocsLock)
+        Log.e("ocs_lock_status_" , "" + ocsSingleToneClass?.getLockStatus(ocsLock))
         runOnUiThread {
             ocsListAdapter?.notifyDataSetChanged()
         }
