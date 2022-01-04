@@ -166,7 +166,6 @@ class SingleScreenOperationActivity : AppCompatActivity(), IAPIOCSLockCallback {
             tvOcsLockStatus.setText(successString)
         }
         llProgressBar.visibility = View.GONE
-
     }
 
     override fun onOCSLockConfigurationDone() {

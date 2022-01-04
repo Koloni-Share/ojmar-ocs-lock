@@ -190,8 +190,13 @@ class OCSSingleToneClassELT3 {
                 override fun onError(p0: OcsSmartManager.OcsSmartManagerError?) {
 
                     activity!!.runOnUiThread {
-                        onPrintActionMessage("extended_licence_e_connect_error_" + p0.toString())
-                        iapiOcsLockCallback.onOCSLockConnectionError(p0.toString())
+                        if(p0.toString().contains("SEND_")){
+                            onPrintActionMessage("extended_licence_e_connect_error_try_again_scan_and_config_" + p0.toString())
+                            onScanOCSForExtendedLicence()
+                        }else{
+                            onPrintActionMessage("extended_licence_e_connect_error_" + p0.toString())
+                            iapiOcsLockCallback.onOCSLockConnectionError(p0.toString())
+                        }
                     }
                 }
 
@@ -199,7 +204,7 @@ class OCSSingleToneClassELT3 {
 
                     activity!!.runOnUiThread {
                         var event = Event.getEventFromFrame(p0)
-                        Event.EV_INITIALIZATION
+//                        Event.EV_INITIALIZATION
                         onPrintActionMessage("extended_licence_e_connect_success_with_code_" + event.eventCode + "_flag_" + event.isSuccessEvent)
                         if (event.isSuccessEvent) {
                             var licenceByteArray =
@@ -276,9 +281,14 @@ class OCSSingleToneClassELT3 {
     private val processCallback: ProcessCallback = object : ProcessCallback {
         override fun onError(error: OcsSmartManager.OcsSmartManagerError?) {
             Log.e("OCS_onError", error.toString())
-            stopOCSScan()
-            onPrintActionMessage("extended_licence_start_connecting_error_" + error.toString())
-            iapiOcsLockCallback.onOCSLockConnectionError("Please try again...")
+            if(error.toString().contains("SEND_")){
+                onPrintActionMessage("extended_licence_start_connecting_error_try_again_to_connect_" + error.toString())
+                connectToALock()
+            }else{
+                stopOCSScan()
+                onPrintActionMessage("extended_licence_start_connecting_error_" + error.toString())
+                iapiOcsLockCallback.onOCSLockConnectionError("Please try again...")
+            }
         }
 
         override fun onSuccess(response: String?) {
