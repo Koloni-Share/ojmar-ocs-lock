@@ -95,7 +95,7 @@ class SingleScreenOperationActivity : AppCompatActivity(), IAPIOCSLockCallback {
             llProgressBar.visibility = View.VISIBLE
             Toast.makeText(this@SingleScreenOperationActivity, "Scan Started.", Toast.LENGTH_SHORT)
                 .show()
-            ocsSingleToneClass?.onScanNormalScan()
+            ocsSingleToneClass?.onScanNormalScan(5)
         }
 
         ocsListAdapter = OcsListAdapter(this@SingleScreenOperationActivity, listOCSLock)
@@ -303,6 +303,7 @@ class SingleScreenOperationActivity : AppCompatActivity(), IAPIOCSLockCallback {
                     LED_ON_900_MILLIS_TYPE,
                     ocsLock,
                     true,
+                    5,
                     this@SingleScreenOperationActivity
                 )
             } else {

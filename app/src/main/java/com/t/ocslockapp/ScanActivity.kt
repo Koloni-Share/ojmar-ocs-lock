@@ -69,7 +69,7 @@ class ScanActivity : AppCompatActivity(), IAPIOCSLockCallback {
             onZoomOutAnimRelative(this@ScanActivity, appBtnScan)
             llProgressBar.visibility = View.VISIBLE
             Toast.makeText(this@ScanActivity, "Scan Started.", Toast.LENGTH_SHORT).show()
-            ocsSingleToneClass?.onScanNormalScan()
+            ocsSingleToneClass?.onScanNormalScan(5)
         }
 
         ocsListAdapter = OcsListAdapter(this@ScanActivity, listOCSLock)

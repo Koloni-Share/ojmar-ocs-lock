@@ -41,6 +41,7 @@ class OCSSingleToneClassELT3 {
     private var activity: Activity? = null
     private var ocsLockMaintenance: OcsLock? = null
     private var scanDeviceCounter = 0
+    private var timeoutSeconds = 5
 
     constructor(
         activity: Activity,
@@ -52,6 +53,7 @@ class OCSSingleToneClassELT3 {
         ocsLEDType: Int,
         ocsLock: OcsLock?,
         isSetMasterCode: Boolean,
+        timeoutSeconds: Int,
         iapiOcsLockCallback: IAPIOCSLockCallback
     ) {
 
@@ -68,6 +70,7 @@ class OCSSingleToneClassELT3 {
         this.iapiOcsLockCallback = iapiOcsLockCallback
         this.activity = activity
         this.ocsLockMaintenance = ocsLock
+        this.timeoutSeconds = timeoutSeconds
 
         activity.runOnUiThread {
             try {
@@ -123,7 +126,7 @@ class OCSSingleToneClassELT3 {
 
     fun onScanOCSForExtendedLicence() {
         ocsLockSmartManager.startScanMaintenance(
-            Constants.DEFAULT_MAINTENANCE_PROXIMITY_SCAN_TIMEOUT,
+            timeoutSeconds,
             object : ScanCallback {
 
                 override fun onCompletion() {
@@ -152,10 +155,10 @@ class OCSSingleToneClassELT3 {
         )
     }
 
-    fun onScanNormalScan() {
+    fun onScanNormalScan(timeoutSeconds: Int) {
         stopOCSScan()
         ocsLockSmartManager.startScanMaintenance(
-            Constants.DEFAULT_MAINTENANCE_PROXIMITY_SCAN_TIMEOUT,
+            timeoutSeconds,
             object : ScanCallback {
 
                 override fun onCompletion() {
