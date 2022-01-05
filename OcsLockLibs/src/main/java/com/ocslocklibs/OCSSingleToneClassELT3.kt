@@ -165,6 +165,7 @@ class OCSSingleToneClassELT3 {
                     if(scanDeviceCounter==0){
                         iapiOcsLockCallback.onOCSLockScanError("No locks were found. Check that Bluetooth and Location...")
                     }
+                    iapiOcsLockCallback.onOCSLockScanCompleted()
                 }
 
                 override fun onError(error: OcsSmartManager.OcsSmartManagerError?) {

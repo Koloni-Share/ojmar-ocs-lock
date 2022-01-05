@@ -12,6 +12,8 @@
         <entry key="app/src/main/res/layout/custom_progressbar.xml" value="0.13229166666666667" />
         <entry key="app/src/main/res/layout/dialog_user_code.xml" value="0.2" />
         <entry key="app/src/main/res/layout/inflator_item_rantal_list.xml" value="0.11302083333333333" />
+        <entry key="app/src/main/res/layout/ocs_inflator_ocs_list.xml" value="0.13125" />
+        <entry key="app/src/main/res/layout/ocs_single_activity.xml" value="0.18" />
         <entry key="app/src/main/res/layout/progressdrawable.xml" value="0.13229166666666667" />
         <entry key="app/src/main/res/layout/scan_activity.xml" value="0.128125" />
         <entry key="app/src/main/res/layout/single_activity.xml" value="0.16" />
