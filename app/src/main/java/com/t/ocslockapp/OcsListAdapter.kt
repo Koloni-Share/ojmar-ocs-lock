@@ -58,6 +58,8 @@ class OcsListAdapter(private val mContext: Context, private val mList: ArrayList
                 mContext.onConnectToOcsLock(position, mList[position]!!)
             }else if (mContext is SingleScreenOperationActivity) {
                 mContext.onConnectToOcsLock(position, mList[position]!!)
+            }else if (mContext is SingleScreenOperationActivityT4) {
+                mContext.onConnectToOcsLock(position, mList[position]!!)
             }
         }
     }

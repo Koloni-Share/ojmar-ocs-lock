@@ -93,7 +93,7 @@ class OCSSingleToneClassELT3 {
                     Led.LED_ON_2_SECONDS_TYPE, ocsExpiryDate, ocsAutomaticClosing
                 )
 
-                onPrintActionMessage("extended_licence_created_and_genetated_extended_licence_frame")
+                onPrintActionMessage("extended_licence_created_and_genetated_extended_licence_frame_master_code_" + this.ocsMasterCode)
 
                 activity.runOnUiThread {
                     Handler(Looper.getMainLooper()).postDelayed({
