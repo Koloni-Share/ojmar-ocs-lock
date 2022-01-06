@@ -6,13 +6,15 @@
         <entry key="app/src/main/res/drawable/btn_bg_edittext.xml" value="0.14895833333333333" />
         <entry key="app/src/main/res/drawable/btn_circular_background.xml" value="0.14895833333333333" />
         <entry key="app/src/main/res/drawable/btn_circular_background_white.xml" value="0.14895833333333333" />
+        <entry key="app/src/main/res/drawable/libs_gredient_toolbar.xml" value="0.13541666666666666" />
         <entry key="app/src/main/res/drawable/progressdrawable.xml" value="0.1484375" />
         <entry key="app/src/main/res/drawable/rounded_inventory_gredient.xml" value="0.14895833333333333" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.15833333333333333" />
         <entry key="app/src/main/res/layout/custom_progressbar.xml" value="0.13229166666666667" />
         <entry key="app/src/main/res/layout/dialog_user_code.xml" value="0.2" />
         <entry key="app/src/main/res/layout/inflator_item_rantal_list.xml" value="0.11302083333333333" />
-        <entry key="app/src/main/res/layout/ocs_inflator_ocs_list.xml" value="0.13125" />
+        <entry key="app/src/main/res/layout/ocs_dialog_user_code.xml" value="0.2" />
+        <entry key="app/src/main/res/layout/ocs_inflator_ocs_list.xml" value="0.2" />
         <entry key="app/src/main/res/layout/ocs_single_activity.xml" value="0.18" />
         <entry key="app/src/main/res/layout/progressdrawable.xml" value="0.13229166666666667" />
         <entry key="app/src/main/res/layout/scan_activity.xml" value="0.128125" />

@@ -79,6 +79,7 @@ class OCSSingleToneClassELT3 {
                     extendedLicense = ExtendedLicense.getLicense(this.readBytes())
                 }.close()
 
+
                 if (isSetMasterCode) {
                     this.ocsMasterCode = ocsMasterCode
                     extendedLicense.masterCode = ocsMasterCode

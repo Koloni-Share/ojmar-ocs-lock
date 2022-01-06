@@ -9,14 +9,33 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="15dp"
         android:orientation="vertical">
 
+        <RelativeLayout
+            android:id="@+id/rlToolBar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_46sdp"
+            android:background="@drawable/libs_gredient_toolbar">
+
+            <TextView
+                android:id="@+id/tvCenterTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/_15sdp"
+                android:layout_marginRight="@dimen/_15sdp"
+                android:gravity="center"
+                android:text="@string/ocs_lock_demo"
+                android:textColor="@color/color_white"
+                android:textSize="@dimen/_14sdp" />
+
+
+        </RelativeLayout>
+
         <LinearLayout
+            android:layout_margin="15dp"
             android:id="@+id/llProgressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -45,6 +64,8 @@
             android:id="@+id/appBtnScan"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:layout_margin="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:background="@drawable/btn_circular_background"
             android:text="@string/scan"
             android:textColor="@color/white"
@@ -54,7 +75,7 @@
             android:id="@+id/appLockUnLock"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_margin="15dp"
             android:background="@drawable/btn_circular_background"
             android:text="@string/lock_unlock"
             android:textColor="@color/white"
@@ -83,9 +104,9 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcvOCSLock"
+            android:layout_margin="@dimen/_10sdp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="15dp"
             android:visibility="visible">
 
         </androidx.recyclerview.widget.RecyclerView>

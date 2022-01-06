@@ -102,7 +102,7 @@
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/tvOcsLockUnLock"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="@dimen/_35sdp"
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/btn_circular_background"
@@ -110,9 +110,9 @@
                 android:padding="5dp"
                 android:text="@string/next"
                 android:textColor="@color/white"
-                android:textSize="20dp"
+                android:textSize="@dimen/_12sdp"
                 android:visibility="visible"
-                tools:text="@string/lock_unlock" />
+                 />
 
         </LinearLayout>
 

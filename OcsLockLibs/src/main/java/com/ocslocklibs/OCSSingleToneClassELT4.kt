@@ -29,7 +29,8 @@ class OCSSingleToneClassELT4 {
     private lateinit var extendedLicense: ExtendedLicense
     private var extendedLicenseFrame = ""
     private var ocsListofLockNumber: IntArray = intArrayOf(12)  // List of Lock Number
-    private var ocsMasterCode = "" // Master Code
+    private var ocsNewMasterCode = "" // Master Code
+    private var ocsCurrentMasterCode = "" // Master Code
     private var ocsUserCode = "" // User Code
     private var ocsLockNumber = 12 // Lock Number
     private var ocsDateFormat = SimpleDateFormat("MM/dd/yyyy") // yyyy/mm/dd  Date Format
@@ -46,7 +47,7 @@ class OCSSingleToneClassELT4 {
 
     constructor(
         activity: Activity,
-        ocsListofLockNumber: IntArray, ocsMasterCode: String,
+        ocsListofLockNumber: IntArray, ocsCurrentMasterCode: String, ocsNewMasterCode: String,
         ocsUserCode: String, ocsLockNumber: Int,
         ocsDateFormat: SimpleDateFormat, ocsExpiryDate: Date,
         ocsBlockKeypad: Boolean, ocsAutomaticClosing: Boolean,
@@ -59,7 +60,11 @@ class OCSSingleToneClassELT4 {
     ) {
 
         scanDeviceCounter = 0
+
+        this.activity = activity
         this.ocsListofLockNumber = ocsListofLockNumber
+        this.ocsCurrentMasterCode = ocsCurrentMasterCode
+        this.ocsNewMasterCode = ocsNewMasterCode
         this.ocsUserCode = ocsUserCode
         this.ocsLockNumber = ocsLockNumber
         this.ocsDateFormat = ocsDateFormat
@@ -68,29 +73,31 @@ class OCSSingleToneClassELT4 {
         this.ocsAutomaticClosing = ocsAutomaticClosing
         this.ocsBuzzOn = ocsBuzzOn
         this.ocsLEDType = ocsLEDType
-        this.iapiOcsLockCallback = iapiOcsLockCallback
-        this.activity = activity
         this.ocsLockMaintenance = ocsLock
         this.timeoutSeconds = timeoutSeconds
         this.isSetMasterCode = isSetMasterCode
+        this.iapiOcsLockCallback = iapiOcsLockCallback
 
         activity.runOnUiThread {
             try {
                 ocsLockSmartManager = OcsSmartManager(activity)
+
                 activity.application.assets.open("ocs_licence").apply {
                     extendedLicense = ExtendedLicense.getLicense(this.readBytes())
                 }.close()
 
-                extendedLicense.masterCode = extendedLicense.masterCode
-                if (isSetMasterCode) {
-                    this.ocsMasterCode = ocsMasterCode
-                } else {
-                    this.ocsMasterCode = extendedLicense.masterCode
-                }
+                extendedLicense.masterCode = ocsCurrentMasterCode
 
                 extendedLicenseFrame = extendedLicense.generateConfigForDedicatedLock(
                     ocsLockMaintenance!!.lockNumber,
-                    extendedLicense.masterCode, ocsUserCode, ocsBlockKeypad,
+                    ocsCurrentMasterCode, ocsUserCode, ocsBlockKeypad,
+                    ocsBuzzOn,
+                    Led.LED_ON_2_SECONDS_TYPE, ocsExpiryDate, ocsAutomaticClosing
+                )
+
+                extendedLicenseFrame = extendedLicense.generateConfigForDedicatedLock(
+                    ocsLockMaintenance!!.lockNumber,
+                    ocsNewMasterCode, ocsUserCode, ocsBlockKeypad,
                     ocsBuzzOn,
                     Led.LED_ON_2_SECONDS_TYPE, ocsExpiryDate, ocsAutomaticClosing
                 )
@@ -99,7 +106,10 @@ class OCSSingleToneClassELT4 {
                     extendedLicense = ExtendedLicense.getLicense(this.readBytes())
                 }.close()
 
-                Log.e("master_code_1_" ,  "" + extendedLicense.masterCode)
+                Log.e(
+                    "master_code_1_",
+                    "" + extendedLicense.masterCode + " : Old :" + ocsCurrentMasterCode + " : New : " + ocsNewMasterCode
+                )
 
                 onPrintActionMessage("extended_licence_created_and_genetated_extended_licence_frame")
 
@@ -170,7 +180,7 @@ class OCSSingleToneClassELT4 {
             object : ScanCallback {
 
                 override fun onCompletion() {
-                    if(scanDeviceCounter==0){
+                    if (scanDeviceCounter == 0) {
                         iapiOcsLockCallback.onOCSLockScanError("No locks were found. Check that Bluetooth and Location...")
                     }
                     iapiOcsLockCallback.onOCSLockScanCompleted()
@@ -202,10 +212,10 @@ class OCSSingleToneClassELT4 {
                 override fun onError(p0: OcsSmartManager.OcsSmartManagerError?) {
 
                     activity!!.runOnUiThread {
-                        if(p0.toString().contains("SEND_")){
+                        if (p0.toString().contains("SEND_")) {
                             onPrintActionMessage("extended_licence_e_connect_error_try_again_scan_and_config_" + p0.toString())
                             onScanOCSForExtendedLicence()
-                        }else{
+                        } else {
                             onPrintActionMessage("extended_licence_e_connect_error_" + p0.toString())
                             iapiOcsLockCallback.onOCSLockConnectionError(p0.toString())
                         }
@@ -220,30 +230,11 @@ class OCSSingleToneClassELT4 {
                         onPrintActionMessage("extended_licence_e_connect_success_with_code_" + event.eventCode + "_flag_" + event.isSuccessEvent)
                         if (event.isSuccessEvent) {
 
-                            if (isSetMasterCode) {
-                                extendedLicense.masterCode = ocsMasterCode
-                            }
+                            extendedLicense.masterCode = ocsNewMasterCode
 
-//                            activity!!.application.assets.open("ocs_licence").apply {
-//                                extendedLicense = ExtendedLicense.getLicense(this.readBytes())
-//                            }.close()
-//
-
-//
-//                            extendedLicenseFrame = extendedLicense.generateConfigForDedicatedLock(
-//                                ocsLockMaintenance!!.lockNumber,
-//                                extendedLicense.masterCode, ocsUserCode, ocsBlockKeypad,
-//                                ocsBuzzOn,
-//                                Led.LED_ON_2_SECONDS_TYPE, ocsExpiryDate, ocsAutomaticClosing
-//                            )
-
-
-//                            if (isSetMasterCode) {
-//                                extendedLicense.masterCode = ocsMasterCode
-//                            }
-
-                            Log.e("master_code_3_" ,  "" + extendedLicense.masterCode + " : " + ocsMasterCode)
-
+                            Log.e(
+                                "master_code_3_",
+                                "" + extendedLicense.masterCode)
 
                             var licenceByteArray =
                                 extendedLicense.getUserFrameDedicatedLocksString(
@@ -256,12 +247,7 @@ class OCSSingleToneClassELT4 {
 
                         } else {
                             stopOCSScan()
-                            activity?.runOnUiThread {
-                                Handler(Looper.getMainLooper()).postDelayed({
-                                    onScanOCSForExtendedLicence()
-                                }, 300)
-                            }
-                            iapiOcsLockCallback.onOCSLockConfigurationError("Set up new master code...")
+                            iapiOcsLockCallback.onOCSLockConfigurationError("Invalid current(OLD) master code. Please enter right one.")
                         }
                     }
                 }
@@ -306,7 +292,7 @@ class OCSSingleToneClassELT4 {
 
     fun connectToALock() {
 
-        Log.e("master_code_4_" ,  "" + extendedLicense.masterCode + " : " + licence.userCodeDedicated)
+        Log.e("master_code_4_", "" + extendedLicense.masterCode + " : " + licence.userCodeDedicated)
 
         onPrintActionMessage("extended_licence_start_connecting_for_lock_unlock")
 
@@ -323,10 +309,10 @@ class OCSSingleToneClassELT4 {
     private val processCallback: ProcessCallback = object : ProcessCallback {
         override fun onError(error: OcsSmartManager.OcsSmartManagerError?) {
             Log.e("OCS_onError", error.toString())
-            if(error.toString().contains("SEND_")){
+            if (error.toString().contains("SEND_")) {
                 onPrintActionMessage("extended_licence_start_connecting_error_try_again_to_connect_" + error.toString())
                 connectToALock()
-            }else{
+            } else {
                 stopOCSScan()
                 onPrintActionMessage("extended_licence_start_connecting_error_" + error.toString())
                 iapiOcsLockCallback.onOCSLockConnectionError("Please try again...")

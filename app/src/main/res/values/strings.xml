@@ -11,4 +11,9 @@
     <string name="way_2">Way 2</string>
     <string name="wait_msg">Processing, Please wait...</string>
     <string name="scanning">Scanning...</string>
+    <string name="enter_current_master_code">Enter Current 6 digit Master Code.</string>
+    <string name="current_master_code">Enter Current Master Code</string>
+    <string name="new_ms_code">Enter New Master Code</string>
+    <string name="enter_four_digit_user_code">Enter Four Digit User Code</string>
+    <string name="ocs_lock_demo">OCS Lock Demo</string>
 </resources>

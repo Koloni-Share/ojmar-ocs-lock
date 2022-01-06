@@ -5,6 +5,8 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -40,10 +42,11 @@ class SingleScreenOperationActivityT4 : AppCompatActivity(), IAPIOCSLockCallback
     var ocsSingleToneClass: OCSSingleToneClassELT4? = null
 
     var ocsListofLockNumber: IntArray = intArrayOf(12)  // List of Lock Number
-    var ocsMasterCode = "" // Master Code
-    var ocsUserCode = "" // User Code
-    var ocsLockNumber = 12 // Lock Number
-    var lockMacID = "" // Lock MAC
+    var ocsNewMasterCode = "" // New Master Code.
+    var ocsCurrentMasterCode = "" // Old Master Code. For Reset purpose.
+    var ocsUserCode = "" // User Code.
+    var ocsLockNumber = 12 // Lock Number.
+    var lockMacID = "" // Lock MAC.
     var ocsDateFormat = SimpleDateFormat("MM/dd/yyyy") // yyyy/mm/dd  Date Format
     var ocsExpiryDate = ocsDateFormat.parse("12/12/2022")  // Expiry Date.
     var ocsBlockKeypad = true
@@ -55,6 +58,7 @@ class SingleScreenOperationActivityT4 : AppCompatActivity(), IAPIOCSLockCallback
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.ocs_single_activity)
+
         marshmallowGPSPremissionCheck()
 
         initOcs()
@@ -93,7 +97,11 @@ class SingleScreenOperationActivityT4 : AppCompatActivity(), IAPIOCSLockCallback
             tvOcsLockStatus.visibility = View.GONE
             onZoomOutAnimRelative(this@SingleScreenOperationActivityT4, appBtnScan)
             llProgressBar.visibility = View.VISIBLE
-            Toast.makeText(this@SingleScreenOperationActivityT4, "Scan Started.", Toast.LENGTH_SHORT)
+            Toast.makeText(
+                this@SingleScreenOperationActivityT4,
+                "Scan Started.",
+                Toast.LENGTH_SHORT
+            )
                 .show()
             ocsSingleToneClass?.onScanNormalScan(5)
         }
@@ -127,7 +135,11 @@ class SingleScreenOperationActivityT4 : AppCompatActivity(), IAPIOCSLockCallback
         Handler(Looper.getMainLooper()).post {
             llProgressBar.visibility = View.GONE
             hideProgressBar(this@SingleScreenOperationActivityT4)
-            Toast.makeText(this@SingleScreenOperationActivityT4, error.toString(), Toast.LENGTH_SHORT)
+            Toast.makeText(
+                this@SingleScreenOperationActivityT4,
+                error.toString(),
+                Toast.LENGTH_SHORT
+            )
                 .show()
         }
     }
@@ -142,7 +154,7 @@ class SingleScreenOperationActivityT4 : AppCompatActivity(), IAPIOCSLockCallback
 
     override fun onOCSLockScanDeviceFound(ocsLock: OcsLock?) {
         listOCSLock.add(ocsLock)
-        Log.e("ocs_lock_status_" , "" + ocsSingleToneClass?.getLockStatus(ocsLock))
+        Log.e("ocs_lock_status_", "" + ocsSingleToneClass?.getLockStatus(ocsLock))
         runOnUiThread {
             ocsListAdapter?.notifyDataSetChanged()
         }
@@ -160,7 +172,7 @@ class SingleScreenOperationActivityT4 : AppCompatActivity(), IAPIOCSLockCallback
     override fun onOCSLockConnectionSuccess(successString: String?, isSuccess: Boolean) {
         progressBarConnection.visibility = View.GONE
         if (isSuccess) {
-            tvOcsLockStatus.setText("Lock Successfully Lock/Unlock \n\nUser Code : " + ocsUserCode + "\nMaster Code : " + ocsMasterCode)
+            tvOcsLockStatus.setText("Lock Successfully Lock/Unlock \n\nUser Code : " + ocsUserCode + "\nMaster Code : " + ocsCurrentMasterCode + " : " + ocsNewMasterCode)
             tvOcsLockStatus.visibility = View.VISIBLE
         } else {
             tvOcsLockStatus.setText(successString)
@@ -176,8 +188,11 @@ class SingleScreenOperationActivityT4 : AppCompatActivity(), IAPIOCSLockCallback
         rcvOCSLock.visibility = View.GONE
         listOCSLock.clear()
         hideProgressBar(this@SingleScreenOperationActivityT4)
-        Toast.makeText(this@SingleScreenOperationActivityT4, "Ready for pair...", Toast.LENGTH_SHORT)
-            .show()
+        Toast.makeText(
+            this@SingleScreenOperationActivityT4,
+            "Ready for pair...",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     override fun onOCSLockConfigurationError(errorMessage: String) {
@@ -186,33 +201,20 @@ class SingleScreenOperationActivityT4 : AppCompatActivity(), IAPIOCSLockCallback
         appLockUnLock.visibility = View.GONE
         rcvOCSLock.visibility = View.VISIBLE
         llProgressBar.visibility = View.GONE
-//        hideProgressBar(this@SingleScreenOperationActivity)
-        Toast.makeText(this@SingleScreenOperationActivityT4, errorMessage, Toast.LENGTH_SHORT).show()
+        hideProgressBar(this@SingleScreenOperationActivityT4)
+        Toast.makeText(this@SingleScreenOperationActivityT4, errorMessage, Toast.LENGTH_SHORT)
+            .show()
     }
 
     private fun marshmallowGPSPremissionCheck() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) !== PackageManager.PERMISSION_GRANTED || checkSelfPermission(
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) !== PackageManager.PERMISSION_GRANTED ||
-                checkSelfPermission(
-                    Manifest.permission.ACCESS_MEDIA_LOCATION
-                ) !== PackageManager.PERMISSION_GRANTED
-                ||
-                checkSelfPermission(
-                    Manifest.permission.BLUETOOTH_SCAN
-                ) !== PackageManager.PERMISSION_GRANTED
-                ||
-                checkSelfPermission(
-                    Manifest.permission.BLUETOOTH_ADVERTISE
-                ) !== PackageManager.PERMISSION_GRANTED
-                ||
-                checkSelfPermission(
-                    Manifest.permission.BLUETOOTH_CONNECT
-                ) !== PackageManager.PERMISSION_GRANTED
+            if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(Manifest.permission.ACCESS_MEDIA_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(Manifest.permission.BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED
 
             ) {
                 requestPermissions(
@@ -272,28 +274,34 @@ class SingleScreenOperationActivityT4 : AppCompatActivity(), IAPIOCSLockCallback
         dg.setContentView(R.layout.ocs_dialog_user_code)
         dg.window!!.setBackgroundDrawableResource(android.R.color.transparent)
 
-        val edtPassword = dg.findViewById<View>(R.id.edtPassword) as TextView
-        val edtMasterCode = dg.findViewById<View>(R.id.edtMasterCode) as TextView
+        val edtUserCode = dg.findViewById<View>(R.id.edtPassword) as TextView
+        val edtNewMasterCode = dg.findViewById<View>(R.id.edtNewMasterCode) as TextView
+        val edtCurrentMasterCode = dg.findViewById<View>(R.id.edtCurrentMasterCode) as TextView
         val appSave = dg.findViewById<View>(R.id.appSave) as AppCompatButton
 
         appSave.setOnClickListener {
             dg.dismiss()
             onZoomOutAnimRelative(this@SingleScreenOperationActivityT4, appSave)
-            if (edtPassword.text.toString().length > 0 && edtMasterCode.text.toString().length > 0) {
+            if (edtUserCode.text.toString().length > 0 && edtCurrentMasterCode.text.toString().length > 0
+                && edtNewMasterCode.text.toString().length > 0
+            ) {
 
                 ocsSingleToneClass?.stopOCSScan()
 
                 showProgressBar(this@SingleScreenOperationActivityT4)
 
                 ocsListofLockNumber = intArrayOf(ocsLock.lockNumber)
-                ocsMasterCode = edtMasterCode.text.toString();
-                ocsUserCode = edtPassword.text.toString()
+
+                ocsUserCode = edtUserCode.text.toString()
+                ocsCurrentMasterCode = edtCurrentMasterCode.text.toString();
+                ocsNewMasterCode = edtNewMasterCode.text.toString();
 
                 ocsSingleToneClass = OCSSingleToneClassELT4(
                     this@SingleScreenOperationActivityT4,
                     ocsListofLockNumber,
-                    edtMasterCode.text.toString(),
-                    edtPassword.text.toString(),
+                    ocsCurrentMasterCode,
+                    ocsNewMasterCode,
+                    ocsUserCode,
                     ocsLock.lockNumber,
                     ocsDateFormat,
                     ocsExpiryDate,

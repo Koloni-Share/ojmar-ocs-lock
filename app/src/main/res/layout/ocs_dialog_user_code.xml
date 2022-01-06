@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/_7sdp"
-        android:layout_marginTop="@dimen/_40sdp"
+        android:layout_marginTop="@dimen/_30sdp"
         android:layout_marginRight="@dimen/_7sdp"
         app:cardCornerRadius="@dimen/_15sdp"
         app:cardElevation="0dp">
@@ -77,11 +77,13 @@
                         android:layout_height="40dp"
                         android:background="@drawable/btn_bg_edittext"
                         android:digits="0123456789"
-                        android:hint="1234"
+                        android:hint="@string/enter_four_digit_user_code"
                         android:inputType="number"
-                        android:maxLength="6"
+                        android:maxLength="4"
                         android:paddingLeft="@dimen/_10sdp"
-                        android:text="1234"
+                        android:text=""
+                        android:imeOptions="actionNext"
+                        android:textSize="@dimen/_12sdp"
                         android:visibility="visible" />
 
                     <TextView
@@ -89,22 +91,49 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
                         android:layout_marginBottom="15dp"
-                        android:text="@string/enter_six_digit_master_code"
+                        android:text="@string/current_master_code"
                         android:textColor="@color/black"
                         android:textSize="15dp"
                         android:visibility="visible" />
 
                     <EditText
-                        android:id="@+id/edtMasterCode"
+                        android:id="@+id/edtCurrentMasterCode"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:background="@drawable/btn_bg_edittext"
                         android:digits="0123456789"
-                        android:hint="123456"
+                        android:hint="@string/enter_current_master_code"
                         android:inputType="number"
                         android:maxLength="6"
+                        android:imeOptions="actionNext"
                         android:paddingLeft="@dimen/_10sdp"
-                        android:text="000000"
+                        android:text=""
+                        android:textSize="@dimen/_12sdp"
+                        android:visibility="visible" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:text="@string/new_ms_code"
+                        android:textColor="@color/black"
+                        android:textSize="15dp"
+                        android:visibility="visible" />
+
+                    <EditText
+                        android:id="@+id/edtNewMasterCode"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/btn_bg_edittext"
+                        android:digits="0123456789"
+                        android:hint="Enter New 6 Digit Master Code"
+                        android:inputType="number"
+                        android:maxLength="6"
+                        android:imeOptions="actionDone"
+                        android:paddingLeft="@dimen/_10sdp"
+                        android:text=""
+                        android:textSize="@dimen/_12sdp"
                         android:visibility="visible" />
 
                     <androidx.appcompat.widget.AppCompatButton
