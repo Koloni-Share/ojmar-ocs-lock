@@ -115,6 +115,7 @@ class OCSSingleToneClassELT4 {
 
                 activity.runOnUiThread {
                     Handler(Looper.getMainLooper()).postDelayed({
+                        scanDeviceCounter = 0
                         onScanOCSForExtendedLicence()
                     }, 300)
                 }
@@ -192,6 +193,7 @@ class OCSSingleToneClassELT4 {
 
                 activity.runOnUiThread {
                     Handler(Looper.getMainLooper()).postDelayed({
+                        scanDeviceCounter = 0
                         onScanOCSForExtendedLicence()
                     }, 300)
                 }
@@ -226,8 +228,12 @@ class OCSSingleToneClassELT4 {
                 override fun onCompletion() {
                     onPrintActionMessage("extended_licence_scan_completed")
                     stopOCSScan()
-                    onPrintActionMessage("extended_licence_scan_lock_found_" + ocsLockNumber)
-                    connectAndConfigureLock(ocsLockMaintenance, extendedLicenseFrame)
+                    if (scanDeviceCounter == 0) {
+                        iapiOcsLockCallback.onOCSLockScanError("No locks were found. Check that Bluetooth and Location...")
+                    } else {
+                        onPrintActionMessage("extended_licence_scan_lock_found_" + ocsLockNumber)
+                        connectAndConfigureLock(ocsLockMaintenance, extendedLicenseFrame)
+                    }
                 }
 
                 override fun onError(error: OcsSmartManager.OcsSmartManagerError?) {
@@ -241,10 +247,10 @@ class OCSSingleToneClassELT4 {
                 override fun onSearchResult(ocsLock: OcsLock?) {
                     activity!!.runOnUiThread {
                         if (ocsLock?.lockNumber!! == ocsLockNumber) {
+                            scanDeviceCounter++
                             if (ocsLockMaintenance == null) {
                                 ocsLockMaintenance = ocsLock
                             }
-//                            stopOCSScan()
                         }
                     }
                 }
@@ -292,6 +298,7 @@ class OCSSingleToneClassELT4 {
 
                     activity!!.runOnUiThread {
                         if (p0.toString().contains("SEND_")) {
+                            scanDeviceCounter = 0
                             onPrintActionMessage("extended_licence_e_connect_error_try_again_scan_and_config_" + p0.toString())
                             onScanOCSForExtendedLicence()
                         } else {
