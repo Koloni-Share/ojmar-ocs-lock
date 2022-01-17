@@ -369,5 +369,4 @@ class SingleScreenOperationActivityT4 : AppCompatActivity(), IAPIOCSLockCallback
             e.printStackTrace()
         }
     }
-
 }

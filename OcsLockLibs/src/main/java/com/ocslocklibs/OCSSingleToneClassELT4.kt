@@ -126,6 +126,83 @@ class OCSSingleToneClassELT4 {
 
     constructor(
         activity: Activity,
+        ocsListofLockNumber: IntArray, ocsCurrentMasterCode: String, ocsNewMasterCode: String,
+        ocsUserCode: String, ocsLockNumber: Int,
+        ocsDateFormat: SimpleDateFormat, ocsExpiryDate: Date,
+        ocsBlockKeypad: Boolean, ocsAutomaticClosing: Boolean,
+        ocsBuzzOn: Boolean,
+        ocsLEDType: Int,
+        isSetMasterCode: Boolean,
+        timeoutSeconds: Int,
+        iapiOcsLockCallback: IAPIOCSLockCallback
+    ) {
+
+        scanDeviceCounter = 0
+
+        this.activity = activity
+        this.ocsListofLockNumber = ocsListofLockNumber
+        this.ocsCurrentMasterCode = ocsCurrentMasterCode
+        this.ocsNewMasterCode = ocsNewMasterCode
+        this.ocsUserCode = ocsUserCode
+        this.ocsLockNumber = ocsLockNumber
+        this.ocsDateFormat = ocsDateFormat
+        this.ocsExpiryDate = ocsExpiryDate
+        this.ocsBlockKeypad = ocsBlockKeypad
+        this.ocsAutomaticClosing = ocsAutomaticClosing
+        this.ocsBuzzOn = ocsBuzzOn
+        this.ocsLEDType = ocsLEDType
+        this.timeoutSeconds = timeoutSeconds
+        this.isSetMasterCode = isSetMasterCode
+        this.iapiOcsLockCallback = iapiOcsLockCallback
+
+        activity.runOnUiThread {
+            try {
+                ocsLockSmartManager = OcsSmartManager(activity)
+
+                activity.application.assets.open("ocs_licence").apply {
+                    extendedLicense = ExtendedLicense.getLicense(this.readBytes())
+                }.close()
+
+                extendedLicense.masterCode = ocsCurrentMasterCode
+
+                extendedLicenseFrame = extendedLicense.generateConfigForDedicatedLock(
+                    ocsLockNumber,
+                    ocsCurrentMasterCode, ocsUserCode, ocsBlockKeypad,
+                    ocsBuzzOn,
+                    Led.LED_ON_2_SECONDS_TYPE, ocsExpiryDate, ocsAutomaticClosing
+                )
+
+                extendedLicenseFrame = extendedLicense.generateConfigForDedicatedLock(
+                    ocsLockNumber,
+                    ocsNewMasterCode, ocsUserCode, ocsBlockKeypad,
+                    ocsBuzzOn,
+                    Led.LED_ON_2_SECONDS_TYPE, ocsExpiryDate, ocsAutomaticClosing
+                )
+
+                activity.application.assets.open("ocs_licence").apply {
+                    extendedLicense = ExtendedLicense.getLicense(this.readBytes())
+                }.close()
+
+                Log.e(
+                    "master_code_1_",
+                    "" + extendedLicense.masterCode + " : Old :" + ocsCurrentMasterCode + " : New : " + ocsNewMasterCode
+                )
+
+                onPrintActionMessage("extended_licence_created_and_genetated_extended_licence_frame")
+
+                activity.runOnUiThread {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        onScanOCSForExtendedLicence()
+                    }, 300)
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    constructor(
+        activity: Activity,
         iapiOcsLockCallback: IAPIOCSLockCallback
     ) {
 
@@ -283,8 +360,6 @@ class OCSSingleToneClassELT4 {
                     })
             }, 300)
         }
-
-
     }
 
     fun connectToALock() {
@@ -297,6 +372,22 @@ class OCSSingleToneClassELT4 {
 
         ocsLockSmartManager.reconnectAndSendToNode(
             ocsLockMaintenance?.tag,
+            Constants.DEFAULT_USER_CONNECTION_TIMEOUT,
+            Constants.DEFAULT_USER_COMMUNICATION_TIMEOUT, licence.frame, processCallback
+        )
+
+    }
+
+    fun connectToALock(ocsMACID: String) {
+
+        Log.e("master_code_4_", "" + extendedLicense.masterCode + " : " + licence.userCodeDedicated)
+
+        onPrintActionMessage("extended_licence_start_connecting_for_lock_unlock")
+
+        stopOCSScan()
+
+        ocsLockSmartManager.reconnectAndSendToNode(
+            ocsMACID,
             Constants.DEFAULT_USER_CONNECTION_TIMEOUT,
             Constants.DEFAULT_USER_COMMUNICATION_TIMEOUT, licence.frame, processCallback
         )
@@ -339,27 +430,7 @@ class OCSSingleToneClassELT4 {
         }
     }
 
-    fun getLockStatus(intVal: Int): Int {
-        if (ocsLockMaintenance != null) {
-            return ocsLockMaintenance!!.lockStatus
-        } else {
-            return 1
-        }
-    }
 
-    fun getLockStatus(strValue: String): String {
-        var passValue = ""
-        if (ocsLockMaintenance != null) {
-            if (ocsLockMaintenance!!.lockStatus == 1) {
-                passValue = "Door is Close."
-            } else {
-                passValue = "Door is Open."
-            }
-            return passValue
-        } else {
-            return ""
-        }
-    }
 
     fun getLockStatus(ocsLock: OcsLock?): String {
         var passValue = ""
