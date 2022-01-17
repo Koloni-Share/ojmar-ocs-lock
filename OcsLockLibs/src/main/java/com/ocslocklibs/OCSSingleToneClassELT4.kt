@@ -222,6 +222,8 @@ class OCSSingleToneClassELT4 {
     }
 
     fun onScanOCSForExtendedLicence() {
+
+        stopOCSScan()
         ocsLockSmartManager.startScanMaintenance(
             timeoutSeconds,
             object : ScanCallback {
