@@ -259,6 +259,7 @@ class OCSSingleToneClassELT4 {
                             if (ocsLockMaintenance == null) {
                                 ocsLockMaintenance = ocsLock
                             }
+                            onCompletion()
                         }
                     }
                 }
