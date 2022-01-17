@@ -103,7 +103,9 @@ class SingleScreenOperationActivityT4 : AppCompatActivity(), IAPIOCSLockCallback
                 Toast.LENGTH_SHORT
             )
                 .show()
-            ocsSingleToneClass?.onScanNormalScan(5)
+
+            shortWay()
+//            ocsSingleToneClass?.onScanNormalScan(5)
         }
 
         ocsListAdapter = OcsListAdapter(this@SingleScreenOperationActivityT4, listOCSLock)
@@ -368,5 +370,36 @@ class SingleScreenOperationActivityT4 : AppCompatActivity(), IAPIOCSLockCallback
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun shortWay(){
+
+        ocsSingleToneClass?.stopOCSScan()
+
+        showProgressBar(this@SingleScreenOperationActivityT4)
+
+        ocsListofLockNumber = intArrayOf(12)
+
+        ocsUserCode = "1234"
+        ocsCurrentMasterCode = "000000"
+        ocsNewMasterCode = "000000"
+
+        ocsSingleToneClass = OCSSingleToneClassELT4(
+            this@SingleScreenOperationActivityT4,
+            ocsListofLockNumber,
+            ocsCurrentMasterCode,
+            ocsNewMasterCode,
+            ocsUserCode,
+            12,
+            ocsDateFormat,
+            ocsExpiryDate,
+            ocsBlockKeypad,
+            ocsAutomaticClosing,
+            ocsBuzzOn,
+            LED_ON_900_MILLIS_TYPE,
+            true,
+            5,
+            this@SingleScreenOperationActivityT4
+        )
     }
 }

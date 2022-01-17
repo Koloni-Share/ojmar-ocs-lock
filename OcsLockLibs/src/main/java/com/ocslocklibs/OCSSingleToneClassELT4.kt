@@ -192,10 +192,14 @@ class OCSSingleToneClassELT4 {
                 onPrintActionMessage("extended_licence_created_and_genetated_extended_licence_frame")
 
                 activity.runOnUiThread {
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        scanDeviceCounter = 0
-                        onScanOCSForExtendedLicence()
-                    }, 300)
+
+                    scanDeviceCounter = 0
+                    onScanOCSForExtendedLicence()
+
+//                    Handler(Looper.getMainLooper()).postDelayed({
+//                        scanDeviceCounter = 0
+//                        onScanOCSForExtendedLicence()
+//                    }, 300)
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -224,6 +228,7 @@ class OCSSingleToneClassELT4 {
     fun onScanOCSForExtendedLicence() {
 
         stopOCSScan()
+        onPrintActionMessage("extended_licence_created_and_start_scan")
         ocsLockSmartManager.startScanMaintenance(
             timeoutSeconds,
             object : ScanCallback {
@@ -249,6 +254,7 @@ class OCSSingleToneClassELT4 {
                 override fun onSearchResult(ocsLock: OcsLock?) {
                     activity!!.runOnUiThread {
                         if (ocsLock?.lockNumber!! == ocsLockNumber) {
+                            onPrintActionMessage("extended_licence_scan_lock_found")
                             scanDeviceCounter++
                             if (ocsLockMaintenance == null) {
                                 ocsLockMaintenance = ocsLock
@@ -259,6 +265,7 @@ class OCSSingleToneClassELT4 {
             }, OcsSmartManager.ScanType.MAINTENANCE
         )
     }
+    //5320+10300
 
     fun onScanNormalScan(timeoutSeconds: Int) {
         stopOCSScan()
