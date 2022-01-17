@@ -226,6 +226,8 @@ class OCSSingleToneClassELT4 {
                 override fun onCompletion() {
                     onPrintActionMessage("extended_licence_scan_completed")
                     stopOCSScan()
+                    onPrintActionMessage("extended_licence_scan_lock_found_" + ocsLockNumber)
+                    connectAndConfigureLock(ocsLockMaintenance, extendedLicenseFrame)
                 }
 
                 override fun onError(error: OcsSmartManager.OcsSmartManagerError?) {
@@ -242,9 +244,7 @@ class OCSSingleToneClassELT4 {
                             if (ocsLockMaintenance == null) {
                                 ocsLockMaintenance = ocsLock
                             }
-                            stopOCSScan()
-                            onPrintActionMessage("extended_licence_scan_lock_found_" + ocsLockNumber)
-                            connectAndConfigureLock(ocsLock, extendedLicenseFrame)
+//                            stopOCSScan()
                         }
                     }
                 }
