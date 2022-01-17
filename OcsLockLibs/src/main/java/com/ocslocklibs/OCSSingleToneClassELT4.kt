@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import com.ocslocklibs.interfacePackage.IAPIOCSLockCallback
 import com.ondo.ocssmartlibrary.OcsLock
 import com.ondo.ocssmartlibrary.OcsSmartManager
@@ -80,6 +81,9 @@ class OCSSingleToneClassELT4 {
 
         activity.runOnUiThread {
             try {
+
+                showToastMessage("Initialize Extende licence with new configurations.")
+
                 ocsLockSmartManager = OcsSmartManager(activity)
 
                 activity.application.assets.open("ocs_licence").apply {
@@ -222,6 +226,10 @@ class OCSSingleToneClassELT4 {
         }
     }
 
+    fun showToastMessage(message: String){
+
+    }
+
     fun onScanOCSForExtendedLicence() {
 
         stopOCSScan()
@@ -235,7 +243,7 @@ class OCSSingleToneClassELT4 {
                     if (scanDeviceCounter == 0) {
                         iapiOcsLockCallback.onOCSLockScanError("No locks were found. Check that Bluetooth and Location...")
                     } else {
-                        onPrintActionMessage("extended_licence_scan_lock_found_" + ocsLockNumber)
+                        onPrintActionMessage("extended_licence_scan_lock_found_start_configurations." + ocsLockNumber)
                         connectAndConfigureLock(ocsLockMaintenance, extendedLicenseFrame)
                     }
                 }
@@ -444,7 +452,7 @@ class OCSSingleToneClassELT4 {
 
     fun stopOCSScan() {
         if (ocsLockSmartManager != null) {
-            onPrintActionMessage("extended_licence_stop_scan")
+//            onPrintActionMessage("extended_licence_stop_scan")
             ocsLockSmartManager.stopScan()
         }
     }
@@ -466,5 +474,8 @@ class OCSSingleToneClassELT4 {
 
     private fun onPrintActionMessage(message: String) {
         Log.e("ocs_lib_", message)
+        activity?.runOnUiThread {
+            Toast.makeText(activity , message, Toast.LENGTH_SHORT).show()
+        }
     }
 }
