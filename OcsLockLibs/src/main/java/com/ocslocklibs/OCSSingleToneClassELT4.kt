@@ -227,6 +227,7 @@ class OCSSingleToneClassELT4 {
                     onPrintActionMessage("extended_licence_scan_completed")
                     stopOCSScan()
                 }
+
                 override fun onError(error: OcsSmartManager.OcsSmartManagerError?) {
                     activity!!.runOnUiThread {
                         stopOCSScan()
@@ -234,9 +235,13 @@ class OCSSingleToneClassELT4 {
                         iapiOcsLockCallback.onOCSLockScanError(error)
                     }
                 }
+
                 override fun onSearchResult(ocsLock: OcsLock?) {
                     activity!!.runOnUiThread {
                         if (ocsLock?.lockNumber!! == ocsLockNumber) {
+                            if (ocsLockMaintenance == null) {
+                                ocsLockMaintenance = ocsLock
+                            }
                             stopOCSScan()
                             onPrintActionMessage("extended_licence_scan_lock_found_" + ocsLockNumber)
                             connectAndConfigureLock(ocsLock, extendedLicenseFrame)
@@ -308,7 +313,8 @@ class OCSSingleToneClassELT4 {
 
                             Log.e(
                                 "master_code_3_",
-                                "" + extendedLicense.masterCode)
+                                "" + extendedLicense.masterCode
+                            )
 
                             var licenceByteArray =
                                 extendedLicense.getUserFrameDedicatedLocksString(
@@ -429,7 +435,6 @@ class OCSSingleToneClassELT4 {
             ocsLockSmartManager.stopScan()
         }
     }
-
 
 
     fun getLockStatus(ocsLock: OcsLock?): String {
