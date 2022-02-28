@@ -4,7 +4,6 @@ import android.app.Activity
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.widget.Toast
 import com.ocslocklibs.interfacePackage.IAPIOCSLockCallback
 import com.ondo.ocssmartlibrary.OcsLock
 import com.ondo.ocssmartlibrary.OcsSmartManager
@@ -12,7 +11,6 @@ import com.ondo.ocssmartlibrary.callbacks.ProcessCallback
 import com.ondo.ocssmartlibrary.callbacks.ScanCallback
 import com.ondo.ocssmartlibrary.datamodel.Event
 import com.ondo.ocssmartlibrary.datamodel.Led
-import com.ondo.ocssmartlibrary.datamodel.PublicConfiguration
 import com.ondo.ocssmartlibrary.exceptions.IncorrectFrameException
 import com.ondo.ocssmartlibrary.license.Constants
 import com.ondo.ocssmartlibrary.license.ExtendedLicense
@@ -475,7 +473,7 @@ class OCSSingleToneClassELT4 {
     private fun onPrintActionMessage(message: String) {
         Log.e("ocs_lib_", message)
         activity?.runOnUiThread {
-            Toast.makeText(activity , message, Toast.LENGTH_SHORT).show()
+//            com.kolonishare.custome.utils.Constants.showFailureCustomToast(activity, message)
         }
     }
 }
