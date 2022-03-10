@@ -8,7 +8,6 @@ import com.ocslocklibs.interfacePackage.IAPIOCSLockCallback
 import com.ondo.ocssmartlibrary.OcsLock
 import com.ondo.ocssmartlibrary.OcsSmartManager
 import com.ondo.ocssmartlibrary.callbacks.ProcessCallback
-import com.ondo.ocssmartlibrary.callbacks.ScanCallback
 import com.ondo.ocssmartlibrary.datamodel.Event
 import com.ondo.ocssmartlibrary.datamodel.Led
 import com.ondo.ocssmartlibrary.exceptions.IncorrectFrameException
@@ -16,11 +15,9 @@ import com.ondo.ocssmartlibrary.license.Constants
 import com.ondo.ocssmartlibrary.license.ExtendedLicense
 import com.ondo.ocssmartlibrary.license.License
 import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.*
 
 
-class OCSSingleToneClassELT4 {
+class OCSSingleToneClass {
 
     private lateinit var ocsLockSmartManager: OcsSmartManager
     private lateinit var iapiOcsLockCallback: IAPIOCSLockCallback
@@ -32,8 +29,6 @@ class OCSSingleToneClassELT4 {
     private var ocsCurrentMasterCode = "" // Master Code
     private var ocsUserCode = "" // User Code
     private var ocsLockNumber = 12 // Lock Number
-    private var ocsDateFormat = SimpleDateFormat("MM/dd/yyyy") // yyyy/mm/dd  Date Format
-    private var ocsExpiryDate = ocsDateFormat.parse("12/12/2030")  // Expiry Date.
     private var ocsBlockKeypad = true
     private var ocsAutomaticClosing = false
     private var ocsBuzzOn = true
@@ -48,7 +43,6 @@ class OCSSingleToneClassELT4 {
         activity: Activity,
         ocsListofLockNumber: IntArray, ocsCurrentMasterCode: String, ocsNewMasterCode: String,
         ocsUserCode: String, ocsLockNumber: Int,
-        ocsDateFormat: SimpleDateFormat, ocsExpiryDate: Date,
         ocsBlockKeypad: Boolean, ocsAutomaticClosing: Boolean,
         ocsBuzzOn: Boolean,
         ocsLEDType: Int,
@@ -66,8 +60,6 @@ class OCSSingleToneClassELT4 {
         this.ocsNewMasterCode = ocsNewMasterCode
         this.ocsUserCode = ocsUserCode
         this.ocsLockNumber = ocsLockNumber
-        this.ocsDateFormat = ocsDateFormat
-        this.ocsExpiryDate = ocsExpiryDate
         this.ocsBlockKeypad = ocsBlockKeypad
         this.ocsAutomaticClosing = ocsAutomaticClosing
         this.ocsBuzzOn = ocsBuzzOn
@@ -94,14 +86,14 @@ class OCSSingleToneClassELT4 {
                     ocsLockMaintenance!!.lockNumber,
                     ocsCurrentMasterCode, ocsUserCode, ocsBlockKeypad,
                     ocsBuzzOn,
-                    Led.LED_ON_2_SECONDS_TYPE, ocsExpiryDate, ocsAutomaticClosing
+                    Led.LED_ON_2_SECONDS_TYPE, null, ocsAutomaticClosing
                 )
 
                 extendedLicenseFrame = extendedLicense.generateConfigForDedicatedLock(
                     ocsLockMaintenance!!.lockNumber,
                     ocsNewMasterCode, ocsUserCode, ocsBlockKeypad,
                     ocsBuzzOn,
-                    Led.LED_ON_2_SECONDS_TYPE, ocsExpiryDate, ocsAutomaticClosing
+                    Led.LED_ON_2_SECONDS_TYPE, null, ocsAutomaticClosing
                 )
 
                 activity.application.assets.open("ocs_licence").apply {
@@ -131,7 +123,6 @@ class OCSSingleToneClassELT4 {
         activity: Activity,
         ocsListofLockNumber: IntArray, ocsCurrentMasterCode: String, ocsNewMasterCode: String,
         ocsUserCode: String, ocsLockNumber: Int,
-        ocsDateFormat: SimpleDateFormat, ocsExpiryDate: Date,
         ocsBlockKeypad: Boolean, ocsAutomaticClosing: Boolean,
         ocsBuzzOn: Boolean,
         ocsLEDType: Int,
@@ -148,8 +139,6 @@ class OCSSingleToneClassELT4 {
         this.ocsNewMasterCode = ocsNewMasterCode
         this.ocsUserCode = ocsUserCode
         this.ocsLockNumber = ocsLockNumber
-        this.ocsDateFormat = ocsDateFormat
-        this.ocsExpiryDate = ocsExpiryDate
         this.ocsBlockKeypad = ocsBlockKeypad
         this.ocsAutomaticClosing = ocsAutomaticClosing
         this.ocsBuzzOn = ocsBuzzOn
@@ -172,14 +161,14 @@ class OCSSingleToneClassELT4 {
                     ocsLockNumber,
                     ocsCurrentMasterCode, ocsUserCode, ocsBlockKeypad,
                     ocsBuzzOn,
-                    Led.LED_ON_2_SECONDS_TYPE, ocsExpiryDate, ocsAutomaticClosing
+                    Led.LED_ON_2_SECONDS_TYPE, null, ocsAutomaticClosing
                 )
 
                 extendedLicenseFrame = extendedLicense.generateConfigForDedicatedLock(
                     ocsLockNumber,
                     ocsNewMasterCode, ocsUserCode, ocsBlockKeypad,
                     ocsBuzzOn,
-                    Led.LED_ON_2_SECONDS_TYPE, ocsExpiryDate, ocsAutomaticClosing
+                    Led.LED_ON_2_SECONDS_TYPE, null, ocsAutomaticClosing
                 )
 
                 activity.application.assets.open("ocs_licence").apply {
@@ -224,8 +213,8 @@ class OCSSingleToneClassELT4 {
         }
     }
 
-    fun showToastMessage(message: String){
-
+    private fun showToastMessage(message: String) {
+            // This method is used to show toast message.
     }
 
     fun onScanOCSForExtendedLicence() {
@@ -234,7 +223,7 @@ class OCSSingleToneClassELT4 {
         onPrintActionMessage("extended_licence_created_and_start_scan")
         ocsLockSmartManager.startScanMaintenance(
             timeoutSeconds,
-            object : ScanCallback {
+            object : com.ondo.ocssmartlibrary.callbacks.ScanCallback {
                 override fun onCompletion() {
                     onPrintActionMessage("extended_licence_scan_completed")
                     stopOCSScan()
@@ -274,7 +263,7 @@ class OCSSingleToneClassELT4 {
         stopOCSScan()
         ocsLockSmartManager.startScanMaintenance(
             timeoutSeconds,
-            object : ScanCallback {
+            object : com.ondo.ocssmartlibrary.callbacks.ScanCallback {
 
                 override fun onCompletion() {
                     if (scanDeviceCounter == 0) {
@@ -360,7 +349,7 @@ class OCSSingleToneClassELT4 {
             Handler(Looper.getMainLooper()).postDelayed({
                 ocsLockSmartManager.startScan(
                     licence, Constants.DEFAULT_USER_SMART_SCAN_TIMEOUT,
-                    object : ScanCallback {
+                    object : com.ondo.ocssmartlibrary.callbacks.ScanCallback {
                         override fun onCompletion() {
                         }
 
@@ -457,12 +446,12 @@ class OCSSingleToneClassELT4 {
 
 
     fun getLockStatus(ocsLock: OcsLock?): String {
-        var passValue = ""
+        var passValue: String
         if (ocsLock != null) {
-            if (ocsLock!!.lockStatus == 1) {
-                passValue = "Door is Close : " + ocsLock!!.lockStatus
+            if (ocsLock.lockStatus == 1) {
+                passValue = "Door is Close : " + ocsLock.lockStatus
             } else {
-                passValue = "Door is Open : " + ocsLock!!.lockStatus
+                passValue = "Door is Open : " + ocsLock.lockStatus
             }
             return passValue
         } else {

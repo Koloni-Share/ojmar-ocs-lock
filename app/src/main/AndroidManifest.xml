@@ -46,17 +46,9 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".PasswordActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".OCSLockUnlockActivity2"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".OCSLockUnlockActivity1"
-            android:screenOrientation="portrait" />
+<!--        <activity-->
+<!--            android:name=".PasswordActivity"-->
+<!--            android:screenOrientation="portrait" />-->
 
     </application>
 </manifest>

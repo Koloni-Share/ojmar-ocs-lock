@@ -5,8 +5,6 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.content.res.Resources
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -15,15 +13,18 @@ import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.animation.AnimationUtils
-import android.widget.*
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.ocslocklibs.OCSSingleToneClassELT4
-import com.ocslocklibs.interfacePackage.IAPIOCSLockCallback
 import com.ondo.ocssmartlibrary.OcsLock
 import com.ondo.ocssmartlibrary.OcsSmartManager
+import com.t.ocslockapp.library.interfacePackage.IAPIOCSLockCallback
+import com.t.ocslockapp.library.interfacePackage.OCSSingleToneClassELT4
 import java.text.SimpleDateFormat
 
 class SingleScreenOperationActivityT4 : AppCompatActivity(), IAPIOCSLockCallback {
@@ -87,7 +88,7 @@ class SingleScreenOperationActivityT4 : AppCompatActivity(), IAPIOCSLockCallback
         listOCSLock.clear()
 
         mLayoutManager = LinearLayoutManager(this@SingleScreenOperationActivityT4)
-        rcvOCSLock!!.layoutManager = mLayoutManager
+        rcvOCSLock.layoutManager = mLayoutManager
 
         appBtnScan.setOnClickListener {
             progressBarConnection.visibility = View.GONE
@@ -370,6 +371,12 @@ class SingleScreenOperationActivityT4 : AppCompatActivity(), IAPIOCSLockCallback
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    fun getUserCodeEmptyCode(length: Int): String {
+        val sb = StringBuilder()
+        for (i in 0 until length) sb.append("F")
+        return sb.toString()
     }
 
     private fun shortWay(){
